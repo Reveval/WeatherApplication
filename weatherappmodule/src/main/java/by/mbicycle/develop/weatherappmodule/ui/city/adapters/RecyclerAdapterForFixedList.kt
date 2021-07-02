@@ -41,7 +41,7 @@ class RecyclerAdapterForFixedList :
         }
         holderForFixedList.apply {
             cityName.text = city.cityName
-            temperature.text = "+${city?.main?.temperature?.toInt()} C"
+            temperature.text = "+${city.main.temperature.toInt()} C"
             weatherIcon.setImageResource(weatherIconId)
         }
     }

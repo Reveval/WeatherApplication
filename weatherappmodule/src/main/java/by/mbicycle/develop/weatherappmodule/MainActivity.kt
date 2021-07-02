@@ -2,8 +2,9 @@ package by.mbicycle.develop.weatherappmodule
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
-import by.mbicycle.develop.weatherappmodule.databinding.ActivityMainBinding
 import by.mbicycle.develop.weatherappmodule.ui.city.CityFragment
 import by.mbicycle.develop.weatherappmodule.ui.city.InformationFragment
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherItem
@@ -33,10 +34,15 @@ class MainActivity : AppCompatActivity(), CityFragment.OnFragmentSendListener {
                 else -> ""
             }
         }.attach()
+
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            add<InformationFragment>(R.id.fragment_container_view)
+        }
     }
 
     override fun onSendData(data: WeatherItem) {
-        val fragment = supportFragmentManager.findFragmentByTag("my_tag") as InformationFragment
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container_view) as InformationFragment
         fragment.setSelectedItem(data)
     }
 }

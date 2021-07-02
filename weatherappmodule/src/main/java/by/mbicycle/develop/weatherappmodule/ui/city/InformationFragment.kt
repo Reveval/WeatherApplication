@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import by.mbicycle.develop.weatherappmodule.BottomBarVisibilityListener
+import by.mbicycle.develop.weatherappmodule.R
 import by.mbicycle.develop.weatherappmodule.databinding.InformationFragmentBinding
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherItem
 
@@ -22,6 +25,10 @@ class InformationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        childFragmentManager.commit {
+            add<InformationFragment>(R.id.root_city_fragment_container)
+        }
 
         activity?.let {
             if (it is BottomBarVisibilityListener) {

@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import by.mbicycle.develop.weatherappmodule.ui.city.CityFragment
+import by.mbicycle.develop.weatherappmodule.ui.city.FragmentRootCityTab
 import by.mbicycle.develop.weatherappmodule.ui.daily.DailyFragment
 import by.mbicycle.develop.weatherappmodule.ui.hourly.HourlyFragment
 
@@ -14,7 +15,7 @@ class NavigationAdapter(activity: FragmentActivity) : FragmentStateAdapter(activ
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0 -> CityFragment()
+            0 -> FragmentRootCityTab()
             1 -> DailyFragment()
             2 -> HourlyFragment()
             else -> CityFragment()

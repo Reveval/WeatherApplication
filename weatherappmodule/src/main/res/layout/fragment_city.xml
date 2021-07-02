@@ -23,6 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_of_search_cities_weathers"
         android:visibility="invisible"
@@ -58,4 +59,5 @@
         app:layout_constraintEnd_toEndOf="@+id/icon_no_data_image_view"
         app:layout_constraintStart_toStartOf="@+id/icon_no_data_image_view"
         app:layout_constraintTop_toBottomOf="@+id/icon_no_data_image_view" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

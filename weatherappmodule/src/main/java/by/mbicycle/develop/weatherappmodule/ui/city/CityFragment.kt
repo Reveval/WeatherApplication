@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.mbicycle.develop.weatherappmodule.*
@@ -32,17 +34,6 @@ class CityFragment : Fragment() {
     )
 
     private val weatherItems = arrayListOf<WeatherItem>()
-
-    interface OnFragmentSendListener {
-        fun onSendData(data: WeatherItem)
-    }
-
-    private lateinit var fragmentSendDataListener: OnFragmentSendListener
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        fragmentSendDataListener = context as OnFragmentSendListener
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,7 +120,9 @@ class CityFragment : Fragment() {
         }, 1000L).attachTo(binding.editText)
 
         recyclerAdapterForSearchList.itemClickListener = { _, data ->
-            fragmentSendDataListener.onSendData(data)
+            childFragmentManager.commit {
+                replace<InformationFragment>(R.id.root_city_fragment_container)
+            }
         }
     }
 }

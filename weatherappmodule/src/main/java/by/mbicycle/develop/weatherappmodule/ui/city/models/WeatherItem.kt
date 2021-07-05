@@ -3,13 +3,18 @@ package by.mbicycle.develop.weatherappmodule.ui.city.models
 import android.os.Parcel
 import android.os.Parcelable
 
-data class WeatherItem(val cityName: String, val weatherIcon: Int, val temperature: Int)
+data class WeatherItem(
+    val cityName: String,
+    val weatherIcon: Int,
+    val temperature: Int,
+    val date: String)
     : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readInt(),
-        parcel.readInt()
+        parcel.readInt(),
+        parcel.readString().toString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

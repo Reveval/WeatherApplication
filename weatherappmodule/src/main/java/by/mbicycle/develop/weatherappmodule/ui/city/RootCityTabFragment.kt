@@ -8,17 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import by.mbicycle.develop.weatherappmodule.R
-import by.mbicycle.develop.weatherappmodule.databinding.RootCityTabFragmentBinding
+import by.mbicycle.develop.weatherappmodule.databinding.FragmentRootCityTabBinding
 
-class FragmentRootCityTab : Fragment() {
-    lateinit var binding: RootCityTabFragmentBinding
+class RootCityTabFragment : Fragment() {
+    lateinit var binding: FragmentRootCityTabBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = RootCityTabFragmentBinding.inflate(inflater, container, false)
+        binding = FragmentRootCityTabBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -31,6 +31,8 @@ class FragmentRootCityTab : Fragment() {
     private fun navigateToCityFragment() {
         childFragmentManager.commit {
             replace<CityFragment>(R.id.root_city_fragment_container)
+            setReorderingAllowed(true)
+            addToBackStack(null)
         }
     }
 }

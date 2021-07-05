@@ -31,16 +31,17 @@
         android:layout_marginTop="261dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"/>
 
     <ImageView
         android:id="@+id/weather_icon_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="112.75dp"
+        android:layout_height="112.75dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="375.12dp"/>
+        android:layout_marginTop="375.12dp" />
 
     <TextView
         android:id="@+id/temperature_text_view"

@@ -5,6 +5,7 @@ const val BASE_URL_FOR_FIXED_LIST = "https://api.openweathermap.org/data/2.5/"
 const val BASE_URL_FOR_SEARCH_LIST = "https://dataservice.accuweather.com/"
 
 const val REQUEST_KEY = "data_sending"
+const val PATTERN_FOR_DATE_FORMAT = "MMMM, d\nK:m a"
 
 /* CITIES IDENTIFIERS */
 const val HOMYEL_ID = 627907

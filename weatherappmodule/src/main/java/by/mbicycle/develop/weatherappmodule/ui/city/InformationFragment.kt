@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResultListener
-import by.mbicycle.develop.weatherappmodule.BottomBarVisibilityListener
-import by.mbicycle.develop.weatherappmodule.REQUEST_KEY
+import by.mbicycle.develop.weatherappmodule.*
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentInformationBinding
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherItem
 
@@ -44,9 +43,18 @@ class InformationFragment : Fragment() {
     }
 
     private fun setSelectedItem(item: WeatherItem) {
+        val weatherIconID = when(item.weatherIcon) {
+            in THUNDERSTORM_ID_RANGE_OW_API, in THUNDERSTORM_ID_RANGE_ACCU_API -> R.drawable.icon_thunder
+            in RAIN_ID_RANGE_OW_API, in RAIN_ID_RANGE_ACCU_API -> R.drawable.icon_rainy
+            in CLOUDS_ID_RANGE_OW_API, in CLOUDS_ID_RANGE_ACCU_API -> R.drawable.icon_cloudy
+            else -> R.drawable.icon_sunny
+        }
+
         binding.apply {
             cityName.text = item.cityName
-            temperatureTextView.text = item.temperature.toString()
+            temperatureTextView.text = "+${item.temperature} C"
+            dateTextView.text = item.date
+            weatherIconImageView.setImageResource(weatherIconID)
         }
     }
 }

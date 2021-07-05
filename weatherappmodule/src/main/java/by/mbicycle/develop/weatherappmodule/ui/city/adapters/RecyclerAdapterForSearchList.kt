@@ -42,9 +42,8 @@ class RecyclerAdapterForSearchList :
             cityName.text = weather.cityName
             temperature.text = "+${weather.temperature} C"
             iconOfWeather.setImageResource(weatherIconId)
+            itemView.setOnClickListener { itemClickListener?.invoke(position, weather) }
         }
-
-        holder.itemView.setOnClickListener { itemClickListener?.invoke(position, weather) }
     }
 
     override fun getItemCount(): Int {

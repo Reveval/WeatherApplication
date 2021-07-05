@@ -8,10 +8,10 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface WeatherApiForSearchList {
-    @GET("locations/v1/cities/search?apikey=zZ9aGSA0ndvMphOT6SeUgABZTQjMMxk4")
+    @GET("locations/v1/cities/search?apikey=4j3dNwmrGKb5EGJU84p9wBhSOicWdcEk")
     fun getLocation(@Query("q") searchText: String) : Call<List<LocationModel>>
 
-    @GET("currentconditions/v1/{key}?apikey=zZ9aGSA0ndvMphOT6SeUgABZTQjMMxk4")
+    @GET("currentconditions/v1/{key}?apikey=4j3dNwmrGKb5EGJU84p9wBhSOicWdcEk")
     fun getWeatherForSearchList(@Path("key") cityKey: String) :
             Call<List<WeatherModelForSearchList>>
 }

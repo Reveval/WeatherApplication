@@ -2,10 +2,13 @@ package by.mbicycle.develop.weatherappmodule
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
+import by.mbicycle.develop.weatherappmodule.ui.city.CityFragment
 import by.mbicycle.develop.weatherappmodule.ui.city.InformationFragment
+import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherItem
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -36,5 +39,14 @@ class MainActivity : AppCompatActivity(), BottomBarVisibilityListener {
 
     override fun setBottomBarVisibility(visibility: Int) {
         tabLayout.visibility = visibility
+    }
+
+    override fun onBackPressed() {
+        val fragmentManager = supportFragmentManager.fragments.first().childFragmentManager
+        if (fragmentManager.fragments.size == 1) {
+            fragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
     }
 }

@@ -14,7 +14,11 @@ data class WeatherModelForFixedList(
     @Expose
     val cityName: String,
     @SerializedName("weather")
-    val weatherDetails: List<Weather>)
+    @Expose
+    val weatherDetails: List<Weather>,
+    @SerializedName("dt")
+    @Expose
+    val date: Long)
 
 data class Main (
     @SerializedName("temp")

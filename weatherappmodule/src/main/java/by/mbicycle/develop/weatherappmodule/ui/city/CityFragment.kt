@@ -1,5 +1,6 @@
 package by.mbicycle.develop.weatherappmodule.ui.city
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.Group
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.mbicycle.develop.weatherappmodule.*
@@ -118,7 +121,12 @@ class CityFragment : Fragment() {
         }, 1000L).attachTo(binding.editText)
 
         recyclerAdapterForSearchList.itemClickListener = { _, data ->
-            
+            parentFragmentManager.commit {
+                replace<InformationFragment>(R.id.root_city_fragment_container)
+                setFragmentResult(REQUEST_KEY, bundleOf("data" to data))
+                setReorderingAllowed(true)
+                addToBackStack(null)
+            }
         }
     }
 }

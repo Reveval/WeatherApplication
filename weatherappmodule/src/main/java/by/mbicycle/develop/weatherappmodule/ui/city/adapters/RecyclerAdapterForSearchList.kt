@@ -34,7 +34,7 @@ class RecyclerAdapterForSearchList :
         val weatherIconId = when(weather.weatherIcon) {
             in THUNDERSTORM_ID_RANGE_ACCU_API -> R.drawable.icon_thunder
             in RAIN_ID_RANGE_ACCU_API -> R.drawable.icon_rainy
-            in RAIN_ID_RANGE_ACCU_API -> R.drawable.icon_cloudy
+            in CLOUDS_ID_RANGE_ACCU_API -> R.drawable.icon_cloudy
             else -> R.drawable.icon_sunny
         }
 

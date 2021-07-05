@@ -12,7 +12,10 @@ data class WeatherModelForSearchList (
     val temperature: Temperature,
     @SerializedName("Link")
     @Expose
-    val link: String
+    val link: String,
+    @SerializedName("EpochTime")
+    @Expose
+    val epochTime: Long
 )
 
 data class Temperature(

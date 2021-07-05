@@ -4,6 +4,8 @@ const val LOG_TAG = "myLogs"
 const val BASE_URL_FOR_FIXED_LIST = "https://api.openweathermap.org/data/2.5/"
 const val BASE_URL_FOR_SEARCH_LIST = "https://dataservice.accuweather.com/"
 
+const val REQUEST_KEY = "data_sending"
+
 /* CITIES IDENTIFIERS */
 const val HOMYEL_ID = 627907
 const val LONDON_ID = 2643743

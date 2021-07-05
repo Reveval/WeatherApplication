@@ -73,8 +73,14 @@ class CityFragment : Fragment() {
         }
 
         retrofitManagerForFixedList.getDataForFixedList(citiesIDs) {
+            weatherItems.clear()
+            it.forEach { model ->
+                val item = model.mapToItem()
+                weatherItems.add(item)
+            }
+
             Handler(Looper.getMainLooper()).post {
-                recyclerAdapterForFixedList.setWeatherData(it)
+                recyclerAdapterForFixedList.setWeatherData(weatherItems)
             }
         }
 

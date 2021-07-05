@@ -9,15 +9,16 @@ import by.mbicycle.develop.weatherappmodule.CLOUDS_ID_RANGE_OW_API
 import by.mbicycle.develop.weatherappmodule.RAIN_ID_RANGE_OW_API
 import by.mbicycle.develop.weatherappmodule.THUNDERSTORM_ID_RANGE_OW_API
 import by.mbicycle.develop.weatherappmodule.databinding.ListOfFixedCitiesWeatherBinding
+import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherItem
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherModelForFixedList
 
 class RecyclerAdapterForFixedList :
     RecyclerView.Adapter<RecyclerAdapterForFixedList.ViewHolderForFixedList>() {
 
-    private var inCities = mutableListOf<WeatherModelForFixedList>()
+    private var inCities = mutableListOf<WeatherItem>()
     private lateinit var binding: ListOfFixedCitiesWeatherBinding
 
-    fun setWeatherData(citiesTempo: List<WeatherModelForFixedList>) {
+    fun setWeatherData(citiesTempo: List<WeatherItem>) {
         inCities.apply {
             clear()
             addAll(citiesTempo)
@@ -33,7 +34,7 @@ class RecyclerAdapterForFixedList :
 
     override fun onBindViewHolder(holderForFixedList: ViewHolderForFixedList, position: Int) {
         val city = inCities[position]
-        val weatherIconId = when(city.weatherDetails[0].weatherId) {
+        val weatherIconId = when(city.weatherIcon) {
             in THUNDERSTORM_ID_RANGE_OW_API -> R.drawable.icon_thunder
             in RAIN_ID_RANGE_OW_API -> R.drawable.icon_rainy
             in CLOUDS_ID_RANGE_OW_API -> R.drawable.icon_cloudy
@@ -41,7 +42,7 @@ class RecyclerAdapterForFixedList :
         }
         holderForFixedList.apply {
             cityName.text = city.cityName
-            temperature.text = "+${city.main.temperature.toInt()} C"
+            temperature.text = "+${city.temperature} C"
             weatherIcon.setImageResource(weatherIconId)
         }
     }

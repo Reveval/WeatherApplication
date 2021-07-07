@@ -50,6 +50,12 @@ class CityFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        activity?.let {
+            if (it is BottomBarVisibilityListener) {
+                it.setBottomBarVisibility(View.VISIBLE)
+            }
+        }
+
         recyclerAdapterForFixedList = RecyclerAdapterForFixedList()
         recyclerAdapterForSearchList = RecyclerAdapterForSearchList()
         groupMessageNoData = binding.groupMessageNoData
@@ -87,25 +93,25 @@ class CityFragment : Fragment() {
                 if (searchTerm.isEmpty()) {
                     activity?.runOnUiThread {
                         recyclerViewForFixedList.visibility = View.VISIBLE
-                        recyclerViewForSearchList.visibility = View.INVISIBLE
-                        groupMessageNoData.visibility = View.INVISIBLE
+                        recyclerViewForSearchList.visibility = View.GONE
+                        groupMessageNoData.visibility = View.GONE
                     }
                     return
                 }
 
                 retrofitManagerForSearchList.getLocationForSearchList(searchTerm) { locations ->
                     if (locations.isEmpty()) {
-                        recyclerViewForFixedList.visibility = View.INVISIBLE
-                        recyclerViewForSearchList.visibility = View.INVISIBLE
+                        recyclerViewForFixedList.visibility = View.GONE
+                        recyclerViewForSearchList.visibility = View.GONE
                         groupMessageNoData.apply {
                             visibility = View.VISIBLE
                             binding.textNoDataTextView.text = "No data for $searchTerm"
                             return@getLocationForSearchList
                         }
                     } else {
-                        recyclerViewForFixedList.visibility = View.INVISIBLE
+                        recyclerViewForFixedList.visibility = View.GONE
                         recyclerViewForSearchList.visibility = View.VISIBLE
-                        groupMessageNoData.visibility = View.INVISIBLE
+                        groupMessageNoData.visibility = View.GONE
                     }
                     retrofitManagerForSearchList.getWeatherDataForSearchList(locations.map { it.cityKey }) { models ->
                         models.forEach { model ->

@@ -1,7 +1,7 @@
 package by.mbicycle.develop.weatherappmodule.ui.city.retrofit
 
 import android.util.Log
-import by.mbicycle.develop.weatherappmodule.BASE_URL_FOR_FIXED_LIST
+import by.mbicycle.develop.weatherappmodule.BASE_URL_FOR_OPEN_WEATHER_API
 import by.mbicycle.develop.weatherappmodule.LOG_TAG
 import by.mbicycle.develop.weatherappmodule.ui.city.api.WeatherApiForFixedList
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherModelForFixedList
@@ -11,7 +11,7 @@ import java.util.concurrent.Executors
 
 class RetrofitManagerForFixedList {
     private val retrofit = Retrofit.Builder().apply {
-        baseUrl(BASE_URL_FOR_FIXED_LIST)
+        baseUrl(BASE_URL_FOR_OPEN_WEATHER_API)
         addConverterFactory(GsonConverterFactory.create())
     }.build()
 

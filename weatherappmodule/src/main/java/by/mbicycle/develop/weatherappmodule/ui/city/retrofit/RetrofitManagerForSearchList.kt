@@ -1,7 +1,7 @@
 package by.mbicycle.develop.weatherappmodule.ui.city.retrofit
 
 import android.util.Log
-import by.mbicycle.develop.weatherappmodule.BASE_URL_FOR_SEARCH_LIST
+import by.mbicycle.develop.weatherappmodule.BASE_URL_FOR_ACCU_WEATHER_API
 import by.mbicycle.develop.weatherappmodule.LOG_TAG
 import by.mbicycle.develop.weatherappmodule.ui.city.models.LocationModel
 import by.mbicycle.develop.weatherappmodule.ui.city.api.WeatherApiForSearchList
@@ -11,12 +11,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.Collections.addAll
 import java.util.concurrent.Executors
 
 class RetrofitManagerForSearchList {
     private val retrofit = Retrofit.Builder().apply {
-        baseUrl(BASE_URL_FOR_SEARCH_LIST)
+        baseUrl(BASE_URL_FOR_ACCU_WEATHER_API)
         addConverterFactory(GsonConverterFactory.create())
     }.build()
 
@@ -30,7 +29,6 @@ class RetrofitManagerForSearchList {
                 response: Response<List<LocationModel>>
             ) {
                 if (response.isSuccessful) {
-                    Log.d(LOG_TAG, "Запрос прошел")
                     block(
                         response.body()?.let { list ->
                             arrayListOf<LocationModel>().apply {

@@ -1,11 +1,12 @@
 package by.mbicycle.develop.weatherappmodule
 
 const val LOG_TAG = "myLogs"
-const val BASE_URL_FOR_FIXED_LIST = "https://api.openweathermap.org/data/2.5/"
-const val BASE_URL_FOR_SEARCH_LIST = "https://dataservice.accuweather.com/"
+const val BASE_URL_FOR_OPEN_WEATHER_API = "https://api.openweathermap.org/data/2.5/"
+const val BASE_URL_FOR_ACCU_WEATHER_API = "https://dataservice.accuweather.com/"
 
 const val REQUEST_KEY = "data_sending"
-const val PATTERN_FOR_DATE_FORMAT = "MMMM, d\nK:m a"
+const val DATE_FORMAT_FOR_CURRENT_FORECAST = "MMMM, d\nK:m a"
+const val DATE_FORMAT_FOR_DAILY_FORECAST = "MMMM, d"
 
 /* CITIES IDENTIFIERS */
 const val HOMYEL_ID = 627907

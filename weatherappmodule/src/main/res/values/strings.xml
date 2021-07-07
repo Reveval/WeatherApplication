@@ -5,4 +5,7 @@
     <string name="daily_tab_name">Daily</string>
     <string name="hourly_tab_name">Hourly</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_not_data">Data is not available</string>
+    <string name="text_do_not_determinate">Cannot determine your current location</string>
+    <string name="text_allow_access">Allow Access</string>
 </resources>

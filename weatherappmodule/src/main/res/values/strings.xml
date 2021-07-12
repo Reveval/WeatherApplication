@@ -4,6 +4,8 @@
     <string name="city_tab_name">City</string>
     <string name="daily_tab_name">Daily</string>
     <string name="hourly_tab_name">Hourly</string>
+    <string name="yesterday_tab_name">Yesterday</string>
+    <string name="today_tab_name">Today</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_not_data">Data is not available</string>
     <string name="text_do_not_determinate">Cannot determine your current location</string>

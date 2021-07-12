@@ -6,14 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class DailyForecastModelForAPI (
     @SerializedName("daily")
     @Expose
-    val listOfDailyForecast: List<DailyForecast>
-) {
-    companion object {
-        fun emptyInstance() : DailyForecastModelForAPI {
-            return DailyForecastModelForAPI(emptyList())
-        }
-    }
-}
+    val listOfDailyForecast: List<DailyForecast> = emptyList())
 
 data class DailyForecast(
     @SerializedName("dt")

@@ -1,28 +1,42 @@
 package by.mbicycle.develop.weatherappmodule
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.viewpager2.widget.ViewPager2
-import by.mbicycle.develop.weatherappmodule.ui.city.BottomBarVisibilityListener
-import com.google.android.material.tabs.TabLayout
+import androidx.activity.result.contract.ActivityResultContracts
+import by.mbicycle.develop.weatherappmodule.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity(), BottomBarVisibilityListener {
-    lateinit var cityViewPager: ViewPager2
-    lateinit var tabLayout: TabLayout
+    private lateinit var binding: ActivityMainBinding
+    private val requestLocationPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            requestLocationUpdates()
+        } else {
+            //пользоваль не дал доступ
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        cityViewPager = findViewById(R.id.view_pager)
-        cityViewPager.isUserInputEnabled = false
-        tabLayout = findViewById(R.id.tab_layout)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
 
         val navigationAdapter = NavigationAdapter(this)
-        cityViewPager.adapter = navigationAdapter
+        binding.viewPager.apply {
+            adapter = navigationAdapter
+            isUserInputEnabled = false
+        }
 
-        TabLayoutMediator(tabLayout, cityViewPager) {
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) {
             tab, position -> tab.text = when(position) {
                 0 -> getString(R.string.city_tab_name)
                 1 -> getString(R.string.daily_tab_name)
@@ -33,7 +47,7 @@ class MainActivity : AppCompatActivity(), BottomBarVisibilityListener {
     }
 
     override fun setBottomBarVisibility(visibility: Int) {
-        tabLayout.visibility = visibility
+        binding.tabLayout.visibility = visibility
     }
 
     override fun onBackPressed() {
@@ -42,6 +56,27 @@ class MainActivity : AppCompatActivity(), BottomBarVisibilityListener {
             fragmentManager.popBackStack()
         } else {
             super.onBackPressed()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun requestLocationUpdates() {
+        val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+
+        val locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                Logger.log("lat=${location.latitude}, lon=${location.longitude}")
+                locationManager.removeUpdates(this)
+            }
+        }
+
+        locationManager.apply {
+            if (isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0F,
+                    locationListener)
+            } else {
+                //провайдер не доступен
+            }
         }
     }
 }

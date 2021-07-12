@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/icon_no_data_image_view"
+        android:layout_width="179dp"
+        android:layout_height="179dp"
+        android:layout_marginTop="210dp"
+        android:background="@drawable/icon_no_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/data_not_available_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
+        android:text="@string/text_not_data"
+        app:layout_constraintEnd_toEndOf="@+id/icon_no_data_image_view"
+        app:layout_constraintStart_toStartOf="@+id/icon_no_data_image_view"
+        app:layout_constraintTop_toBottomOf="@+id/icon_no_data_image_view" />
+
+    <TextView
+        android:id="@+id/do_not_determinate_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_do_not_determinate"
+        app:layout_constraintStart_toStartOf="@+id/data_not_available_text_view"
+        app:layout_constraintEnd_toEndOf="@+id/data_not_available_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/data_not_available_text_view" />
+
+    <Button
+        android:id="@+id/button_allow_access"
+        android:layout_width="168dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="34dp"
+        android:text="@string/text_allow_access"
+        android:backgroundTint="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/do_not_determinate_text_view"
+        app:layout_constraintStart_toStartOf="@+id/do_not_determinate_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/do_not_determinate_text_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

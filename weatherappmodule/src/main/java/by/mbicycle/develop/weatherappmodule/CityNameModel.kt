@@ -6,5 +6,8 @@ import com.google.gson.annotations.SerializedName
 class CityNameModel(
     @SerializedName("name")
     @Expose
-    val cityName: String = ""
+    val cityName: String = "",
+    @SerializedName("dt")
+    @Expose
+    val date: Long = 0L
 )

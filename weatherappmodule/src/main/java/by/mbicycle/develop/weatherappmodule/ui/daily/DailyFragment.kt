@@ -7,13 +7,11 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import by.mbicycle.develop.weatherappmodule.UpdateLocationListener
-import by.mbicycle.develop.weatherappmodule.CoordinatesKeys
-import by.mbicycle.develop.weatherappmodule.PreferencesManager
+import by.mbicycle.develop.weatherappmodule.*
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentDailyBinding
-import by.mbicycle.develop.weatherappmodule.mapToItem
 
 class DailyFragment : Fragment(), UpdateLocationListener {
     private lateinit var binding: FragmentDailyBinding

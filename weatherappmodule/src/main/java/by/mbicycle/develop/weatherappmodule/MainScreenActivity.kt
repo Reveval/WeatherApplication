@@ -2,6 +2,8 @@ package by.mbicycle.develop.weatherappmodule
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import by.mbicycle.develop.weatherappmodule.databinding.ActivityMainScreenBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -17,12 +19,12 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener {
 
         binding.apply {
             messageNoData.root.visibility = View.GONE
-            viewPager.apply {
+            mainScreenViewPager.apply {
                 adapter = MainScreenAdapter(this@MainScreenActivity)
                 isUserInputEnabled = false
             }
 
-            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            TabLayoutMediator(tabLayout, mainScreenViewPager) { tab, position ->
                 tab.text = when(position) {
                     0 -> getString(R.string.city_tab_name)
                     1 -> getString(R.string.daily_tab_name)
@@ -35,6 +37,15 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener {
         if (PreferencesManager.instance(this).preferencesIsEmpty()) {
             getRecentLocation()
         }
+
+        binding.swipeRefreshLayout.apply {
+            setOnRefreshListener {
+                getRecentLocation()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (isRefreshing) isRefreshing = false
+                }, 1000L)
+            }
+        }
     }
 
     private fun getRecentLocation() {
@@ -46,8 +57,8 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener {
         }
 
         binding.run {
-            (viewPager.adapter as? MainScreenAdapter)?.getRecentFragmentBy(
-                viewPager.currentItem)?.let { fragment ->
+            (mainScreenViewPager.adapter as? MainScreenAdapter)?.getRecentFragmentBy(
+                mainScreenViewPager.currentItem)?.let { fragment ->
 
                 if(fragment is UpdateLocationListener) {
                     fragment.loadLocationData()

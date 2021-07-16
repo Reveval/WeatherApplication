@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
 import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import by.mbicycle.develop.weatherappmodule.R
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentRootCityTabBinding
 
@@ -30,7 +30,7 @@ class RootCityTabFragment : Fragment() {
 
     private fun navigateToCityFragment() {
         childFragmentManager.commit {
-            replace<CityFragment>(R.id.root_city_fragment_container)
+            add<CityFragment>(R.id.root_city_fragment_container)
             setReorderingAllowed(true)
             addToBackStack(null)
         }

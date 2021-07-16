@@ -1,8 +1,6 @@
 package by.mbicycle.develop.weatherappmodule.ui.daily
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.mbicycle.develop.weatherappmodule.UpdateLocationListener
+import by.mbicycle.develop.weatherappmodule.CoordinatesKeys
+import by.mbicycle.develop.weatherappmodule.PreferencesManager
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentDailyBinding
 import by.mbicycle.develop.weatherappmodule.mapToItem
 
-class DailyFragment : Fragment() {
+class DailyFragment : Fragment(), UpdateLocationListener {
     private lateinit var binding: FragmentDailyBinding
     private val recyclerAdapter = RecyclerAdapterForDailyTab()
 
@@ -37,6 +38,7 @@ class DailyFragment : Fragment() {
         }
 
         showDailyForecast()
+        //TODO don't forget to show default empty state
     }
 
     @SuppressLint("MissingPermission")
@@ -44,25 +46,36 @@ class DailyFragment : Fragment() {
         val retrofitManager = RetrofitManagerForDailyForecast()
         val listOfDailyForecastItems = arrayListOf<DailyForecastItem>()
 
-        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let {
-            retrofitManager.getCityName(it.latitude, it.longitude) { model ->
+        context?.let { ctx ->
+            PreferencesManager.instance(ctx).let { prefs ->
 
-                Handler(Looper.getMainLooper()).post {
-                    binding.cityNameTextView.text = model.cityName
+                if (prefs.preferencesIsEmpty()) return
+
+                val latitude = prefs.loadData(CoordinatesKeys.LATITUDE)
+                val longitude = prefs.loadData(CoordinatesKeys.LONGITUDE)
+
+                retrofitManager.getCityName(latitude, longitude) { model ->
+                    Handler(Looper.getMainLooper()).post {
+                        binding.cityNameTextView.text = model.cityName
+                    }
                 }
-            }
 
-            retrofitManager.getDailyForecast(it.latitude, it.longitude) { modelApi ->
-                listOfDailyForecastItems.clear()
-                modelApi.listOfDailyForecast.forEach { daily ->
-                    listOfDailyForecastItems.add(daily.mapToItem())
-                }
+                retrofitManager.getDailyForecast(latitude, longitude) { modelApi ->
+                    listOfDailyForecastItems.clear()
+                    modelApi.listOfDailyForecast.forEach { daily ->
+                        listOfDailyForecastItems.add(daily.mapToItem())
+                    }
 
-                Handler(Looper.getMainLooper()).post {
-                    recyclerAdapter.setData(listOfDailyForecastItems)
+                    Handler(Looper.getMainLooper()).post {
+                        recyclerAdapter.setData(listOfDailyForecastItems)
+                        //TODO don't forget to hide default empty view
+                    }
                 }
             }
         }
+    }
+
+    override fun loadLocationData() {
+        showDailyForecast()
     }
 }

@@ -59,6 +59,8 @@ class CityFragment : Fragment() {
         recyclerAdapterForFixedList = RecyclerAdapterForFixedList()
         recyclerAdapterForSearchList = RecyclerAdapterForSearchList()
         groupMessageNoData = binding.groupMessageNoData
+        val searchResult = binding.searchResultsTextView
+
 
         val recyclerViewForFixedList = binding.recyclerOfFixedCitiesWeathers
         recyclerViewForFixedList.apply {
@@ -93,6 +95,7 @@ class CityFragment : Fragment() {
                 if (searchTerm.isEmpty()) {
                     activity?.runOnUiThread {
                         recyclerViewForFixedList.visibility = View.VISIBLE
+                        searchResult.visibility = View.GONE
                         recyclerViewForSearchList.visibility = View.GONE
                         groupMessageNoData.visibility = View.GONE
                     }
@@ -103,6 +106,7 @@ class CityFragment : Fragment() {
                     if (locations.isEmpty()) {
                         recyclerViewForFixedList.visibility = View.GONE
                         recyclerViewForSearchList.visibility = View.GONE
+                        searchResult.visibility = View.GONE
                         groupMessageNoData.apply {
                             visibility = View.VISIBLE
                             binding.textNoDataTextView.text = "No data for $searchTerm"
@@ -110,6 +114,7 @@ class CityFragment : Fragment() {
                         }
                     } else {
                         recyclerViewForFixedList.visibility = View.GONE
+                        searchResult.visibility = View.VISIBLE
                         recyclerViewForSearchList.visibility = View.VISIBLE
                         groupMessageNoData.visibility = View.GONE
                     }
@@ -129,16 +134,16 @@ class CityFragment : Fragment() {
         }, 1000L).attachTo(binding.editText)
 
         recyclerAdapterForSearchList.itemClickListener = { _, data ->
-            itemClickedActions(parentFragmentManager, data)
+            itemClickedActions(data)
         }
 
         recyclerAdapterForFixedList.itemClickListener = { _, data ->
-            itemClickedActions(parentFragmentManager, data)
+            itemClickedActions(data)
         }
     }
 
-    private fun itemClickedActions(manager: FragmentManager, data: WeatherItem) {
-        manager.commit {
+    private fun itemClickedActions(data: WeatherItem) {
+        parentFragmentManager.commit {
             replace<InformationFragment>(R.id.root_city_fragment_container)
             setFragmentResult(REQUEST_KEY, bundleOf("data" to data))
             setReorderingAllowed(true)

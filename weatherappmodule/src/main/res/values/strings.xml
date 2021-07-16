@@ -10,4 +10,9 @@
     <string name="text_not_data">Data is not available</string>
     <string name="text_do_not_determinate">Cannot determine your current location</string>
     <string name="text_allow_access">Allow Access</string>
+    <string name="permission_needed_dialog_title">Permission needed</string>
+    <string name="message_needed_location_permission">Location Permission needed to get local forecast</string>
+    <string name="positive_button_name">Open Setting</string>
+    <string name="negative_button_name">Cancel</string>
+    <string name="search_result_text">Search Results</string>
 </resources>

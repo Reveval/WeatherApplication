@@ -18,5 +18,4 @@ class HourlyNavigationAdapter(fragment: Fragment) : FragmentStateAdapter(fragmen
             else -> throw IllegalStateException()
         }
     }
-
 }

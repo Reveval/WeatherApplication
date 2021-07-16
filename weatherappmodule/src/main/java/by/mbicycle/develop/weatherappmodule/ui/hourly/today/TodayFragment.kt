@@ -11,13 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import by.mbicycle.develop.weatherappmodule.*
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentTodayBinding
-import by.mbicycle.develop.weatherappmodule.mapToItem
-import by.mbicycle.develop.weatherappmodule.ui.hourly.HourlyForecastItem
-import by.mbicycle.develop.weatherappmodule.ui.hourly.RecyclerAdapterForHourlyTab
-import by.mbicycle.develop.weatherappmodule.ui.hourly.RetrofitManagerForHourlyForecast
+import by.mbicycle.develop.weatherappmodule.ui.hourly.*
+import java.util.*
 
-class TodayFragment private constructor() : Fragment() {
+class TodayFragment private constructor() : Fragment(), UpdateLocationListener {
     private lateinit var binding: FragmentTodayBinding
     private val recyclerAdapter = RecyclerAdapterForHourlyTab()
 
@@ -47,24 +46,61 @@ class TodayFragment private constructor() : Fragment() {
         val retrofitManager = RetrofitManagerForHourlyForecast()
         val listOfHourlyForecastItems = arrayListOf<HourlyForecastItem>()
 
-        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-        locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let {
-            retrofitManager.getHourlyForecast(it.latitude, it.longitude) { modelApi ->
-                listOfHourlyForecastItems.clear()
-                modelApi.listOfHourlyForecast.forEach { hourly ->
-                    listOfHourlyForecastItems.add(hourly.mapToItem())
+        context?.let { ctx ->
+            PreferencesManager.instance(ctx).let { prefs ->
+                if (prefs.preferencesIsEmpty()) return
+
+                val latitude = prefs.loadData(CoordinatesKeys.LATITUDE)
+                val longitude = prefs.loadData(CoordinatesKeys.LONGITUDE)
+
+                retrofitManager.getCityName(latitude, longitude) { cityModel ->
+                    PreferencesForHourlyTab.instance(ctx).apply {
+                        saveData(HourlyTabsPrefsKeys.TODAY, cityModel.getCityNameWithFormattedDate())
+                    }
                 }
 
-                Handler(Looper.getMainLooper()).post {
-                    recyclerAdapter.setData(listOfHourlyForecastItems)
+                retrofitManager.getHourlyForecast(latitude, longitude) { modelApi ->
+                    listOfHourlyForecastItems.clear()
+
+                    modelApi.listOfHourlyForecast.filter { isDateEqualsCurrentDate(it.date) }.forEach { hourly ->
+                        listOfHourlyForecastItems.add(hourly.mapToItem())
+                    }
+
+                    Handler(Looper.getMainLooper()).post {
+                        recyclerAdapter.setData(listOfHourlyForecastItems)
+                    }
                 }
             }
         }
+    }
+
+    private fun isDateEqualsCurrentDate(date: Long) : Boolean {
+        val currentDate = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+
+        val calcDate = Calendar.getInstance().run {
+            time = Date(date * 1000L)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            timeInMillis
+        }
+
+        return currentDate == calcDate
     }
 
     companion object {
         fun instance() : TodayFragment {
             return TodayFragment()
         }
+    }
+
+    override fun loadLocationData() {
+        showHourlyForecast()
     }
 }

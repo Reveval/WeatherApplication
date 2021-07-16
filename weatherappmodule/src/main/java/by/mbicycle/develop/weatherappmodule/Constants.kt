@@ -8,6 +8,8 @@ const val REQUEST_KEY = "data_sending"
 const val DATE_FORMAT_FOR_CURRENT_FORECAST = "MMMM, d\nK:m a"
 const val DATE_FORMAT_FOR_DAILY_FORECAST = "MMMM, d"
 const val HOURLY_FORMAT_FOR_DAILY_FORECAST = "h a"
+const val HOURLY_PREFS_FILE_NAME = "prefs_hourly"
+const val LOC_PREFS_FILE_NAME = "loc_prefs"
 
 /* CITIES IDENTIFIERS */
 const val HOMYEL_ID = 627907

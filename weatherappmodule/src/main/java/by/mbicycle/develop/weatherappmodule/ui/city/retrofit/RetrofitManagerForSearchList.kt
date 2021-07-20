@@ -1,11 +1,16 @@
 package by.mbicycle.develop.weatherappmodule.ui.city.retrofit
 
+import android.content.Context
 import android.util.Log
 import by.mbicycle.develop.weatherappmodule.BASE_URL_FOR_ACCU_WEATHER_API
+import by.mbicycle.develop.weatherappmodule.BuildConfig
 import by.mbicycle.develop.weatherappmodule.LOG_TAG
+import by.mbicycle.develop.weatherappmodule.NetworkConnectionInterceptor
 import by.mbicycle.develop.weatherappmodule.ui.city.models.LocationModel
 import by.mbicycle.develop.weatherappmodule.ui.city.api.WeatherApiForSearchList
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherModelForSearchList
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,10 +18,20 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.Executors
 
-class RetrofitManagerForSearchList {
+class RetrofitManagerForSearchList(context: Context) {
+    private val client = OkHttpClient.Builder().apply {
+        addInterceptor(
+            HttpLoggingInterceptor().setLevel(
+            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else
+                HttpLoggingInterceptor.Level.NONE
+        ))
+        addInterceptor(NetworkConnectionInterceptor(context))
+    }.build()
+
     private val retrofit = Retrofit.Builder().apply {
         baseUrl(BASE_URL_FOR_ACCU_WEATHER_API)
         addConverterFactory(GsonConverterFactory.create())
+        client(client)
     }.build()
 
     private val weatherAPI = retrofit.create(WeatherApiForSearchList::class.java)

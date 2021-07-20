@@ -1,8 +1,6 @@
 package by.mbicycle.develop.weatherappmodule.ui.hourly.today
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,7 +14,7 @@ import by.mbicycle.develop.weatherappmodule.databinding.FragmentTodayBinding
 import by.mbicycle.develop.weatherappmodule.ui.hourly.*
 import java.util.*
 
-class TodayFragment private constructor() : Fragment(), UpdateLocationListener {
+class TodayFragment private constructor() : Fragment(), UpdateDataListener {
     private lateinit var binding: FragmentTodayBinding
     private val recyclerAdapter = RecyclerAdapterForHourlyTab()
 
@@ -39,11 +37,26 @@ class TodayFragment private constructor() : Fragment(), UpdateLocationListener {
         }
 
         showHourlyForecast()
+
+        binding.todaySwipeRefresh.apply {
+            setOnRefreshListener {
+                activity?.let {
+                    if (it is SwipeRefreshListener) {
+                        it.updateData()
+                    }
+                }
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (isRefreshing) isRefreshing = false
+                }, 1000L)
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun showHourlyForecast() {
-        val retrofitManager = RetrofitManagerForHourlyForecast()
+        val retrofitManager = context?.let { RetrofitManagerForHourlyForecast(it) } ?:
+            RetrofitManagerForHourlyForecast(requireContext())
         val listOfHourlyForecastItems = arrayListOf<HourlyForecastItem>()
 
         context?.let { ctx ->
@@ -100,7 +113,7 @@ class TodayFragment private constructor() : Fragment(), UpdateLocationListener {
         }
     }
 
-    override fun loadLocationData() {
+    override fun reloadData() {
         showHourlyForecast()
     }
 }

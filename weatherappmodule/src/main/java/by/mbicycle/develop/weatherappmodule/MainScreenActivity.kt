@@ -2,14 +2,12 @@ package by.mbicycle.develop.weatherappmodule
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import by.mbicycle.develop.weatherappmodule.databinding.ActivityMainScreenBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import java.util.*
 
-class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener {
+class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener, SwipeRefreshListener {
     private lateinit var binding: ActivityMainScreenBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,31 +35,26 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener {
         if (PreferencesManager.instance(this).preferencesIsEmpty()) {
             getRecentLocation()
         }
-
-        binding.swipeRefreshLayout.apply {
-            setOnRefreshListener {
-                getRecentLocation()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (isRefreshing) isRefreshing = false
-                }, 1000L)
-            }
-        }
     }
 
     private fun getRecentLocation() {
         PreferencesManager.instance(this).apply {
-            LocationController(this@MainScreenActivity) { location ->
+            LocationController(this@MainScreenActivity).requestLocationUpdate { location ->
                 saveData(CoordinatesKeys.LONGITUDE, location.longitude.toFloat())
                 saveData(CoordinatesKeys.LATITUDE, location.latitude.toFloat())
+
+                updateDataIntoSomeFragment()
             }
         }
+    }
 
+    private fun updateDataIntoSomeFragment() {
         binding.run {
             (mainScreenViewPager.adapter as? MainScreenAdapter)?.getRecentFragmentBy(
                 mainScreenViewPager.currentItem)?.let { fragment ->
 
-                if(fragment is UpdateLocationListener) {
-                    fragment.loadLocationData()
+                if(fragment is UpdateDataListener) {
+                    fragment.reloadData()
                 }
             }
         }
@@ -78,5 +71,9 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener {
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun updateData() {
+        updateDataIntoSomeFragment()
     }
 }

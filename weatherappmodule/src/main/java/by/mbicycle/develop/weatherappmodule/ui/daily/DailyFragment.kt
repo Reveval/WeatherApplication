@@ -7,13 +7,12 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.mbicycle.develop.weatherappmodule.*
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentDailyBinding
 
-class DailyFragment : Fragment(), UpdateLocationListener {
+class DailyFragment : Fragment(), UpdateDataListener {
     private lateinit var binding: FragmentDailyBinding
     private val recyclerAdapter = RecyclerAdapterForDailyTab()
 
@@ -34,14 +33,29 @@ class DailyFragment : Fragment(), UpdateLocationListener {
             adapter = recyclerAdapter
             overScrollMode = View.OVER_SCROLL_NEVER
         }
+        //TODO don't forget to show default empty state
+
+        binding.dailySwipeRefresh.apply {
+            setOnRefreshListener {
+                activity?.let {
+                    if (it is SwipeRefreshListener) {
+                        it.updateData()
+                    }
+                }
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (isRefreshing) isRefreshing = false
+                }, 1000L)
+            }
+        }
 
         showDailyForecast()
-        //TODO don't forget to show default empty state
     }
 
     @SuppressLint("MissingPermission")
     private fun showDailyForecast() {
-        val retrofitManager = RetrofitManagerForDailyForecast()
+        val retrofitManager = context?.let { RetrofitManagerForDailyForecast(it) } ?:
+            RetrofitManagerForDailyForecast(requireContext())
         val listOfDailyForecastItems = arrayListOf<DailyForecastItem>()
 
         context?.let { ctx ->
@@ -73,7 +87,7 @@ class DailyFragment : Fragment(), UpdateLocationListener {
         }
     }
 
-    override fun loadLocationData() {
+    override fun reloadData() {
         showDailyForecast()
     }
 }

@@ -16,5 +16,4 @@
     <string name="negative_button_name">Cancel</string>
     <string name="search_result_text">Search Results</string>
     <string name="no_update_text">Cannot get an update</string>
-    <string name="check_connection_text">Please check your connection to the internet</string>
 </resources>

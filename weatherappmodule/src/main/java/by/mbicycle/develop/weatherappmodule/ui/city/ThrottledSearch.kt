@@ -1,33 +1,22 @@
 package by.mbicycle.develop.weatherappmodule.ui.city
 
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import java.util.*
 import kotlin.concurrent.timerTask
 
-class ThrottledSearch(
-    delegate: Delegate,
-    milliseconds: Long
-) {
+class ThrottledSearch(private val delegate: Delegate, private val milliseconds: Long) {
     interface Delegate {
         fun onThrottledSearch(searchTerm: String)
     }
 
-    private val mDelegate = delegate
-    private val mDelayMilliseconds = milliseconds
-    private var mTimer: Timer? = null
-    private var mSearchTerm = ""
-
-    fun onTextChanged(charSequence: CharSequence?) {
-        mTimer?.cancel()
-
-        mTimer = Timer()
-        mSearchTerm = charSequence.toString()
-
-        mTimer?.schedule(timerTask {
-            mDelegate.onThrottledSearch(mSearchTerm)
-        }, mDelayMilliseconds)
+    private fun onTextChanged(charSequence: CharSequence?) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            delegate.onThrottledSearch(charSequence.toString())
+        }, milliseconds)
     }
 
     fun attachTo(editText: EditText) {

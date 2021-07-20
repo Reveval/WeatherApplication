@@ -9,7 +9,7 @@ import by.mbicycle.develop.weatherappmodule.ui.daily.DailyFragment
 import by.mbicycle.develop.weatherappmodule.ui.hourly.HourlyFragment
 
 class MainScreenAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
-    private val fragments = listOf(RootCityTabFragment(), DailyFragment(), HourlyFragment())
+    private val fragments = listOf<Fragment>(RootCityTabFragment(), DailyFragment(), HourlyFragment())
 
     override fun getItemCount(): Int {
         return 3

@@ -2,7 +2,6 @@ package by.mbicycle.develop.weatherappmodule.ui.hourly.yesterday
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,15 +16,9 @@ import by.mbicycle.develop.weatherappmodule.ui.hourly.*
 import java.io.File
 import java.util.*
 
-class YesterdayFragment private constructor() : Fragment(), UpdateLocationListener {
+class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
     private lateinit var binding: FragmentYesterdayBinding
     private val recyclerAdapter = RecyclerAdapterForHourlyTab()
-    private val currentDateWithoutTimeInMillis = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }.timeInMillis
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,38 +39,61 @@ class YesterdayFragment private constructor() : Fragment(), UpdateLocationListen
         }
 
         showHourlyForecast()
+
+        binding.yesterdaySwipeRefresh.apply {
+            setOnRefreshListener {
+                activity?.let {
+                    if(it is SwipeRefreshListener) {
+                        it.updateData()
+                    }
+                }
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (isRefreshing) isRefreshing = false
+                }, 1000L)
+            }
+        }
     }
 
     private fun showHourlyForecast() {
-        val yesterdayDateInMillis = currentDateWithoutTimeInMillis - 86400000L
+        val currentDateWithoutTimeInMillis = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
 
+        val yesterdayDateInMillis = currentDateWithoutTimeInMillis - 86400000L
         val currentDateWithPostfix = "$currentDateWithoutTimeInMillis.json"
         val yesterdayDateWithPostfix = "$yesterdayDateInMillis.json"
 
         context?.let { context ->
-            val files = File(context.filesDir, "/").listFiles()
-
-            files?.let { listOfFiles ->
+            File(context.filesDir, "/").listFiles()?.let { listOfFiles ->
                 if (listOfFiles.isEmpty()) {
                     readDataFromJson(context, currentDateWithPostfix)
-                } else if (!listOfFiles[0].name.equals(currentDateWithPostfix) && !listOfFiles[0].equals(yesterdayDateWithPostfix)) {
-                    listOfFiles[0].delete()
-                    readDataFromJson(context, currentDateWithPostfix)
-                } else {
+                } else if (listOfFiles[0].name.equals(currentDateWithPostfix) || listOfFiles[0].name.equals(yesterdayDateWithPostfix)) {
                     File(context.filesDir, "/").listFiles()?.let {
                         JsonHelper.readDataFromJson(context, it[0].name) { items ->
                             recyclerAdapter.setData(items)
                         }
                     }
+                } else {
+                    listOfFiles[0].delete()
+                    readDataFromJson(context, currentDateWithPostfix)
                 }
             }
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun writeHourlyForecastDataIntoJson(context: Context, currentDate: String, done: (Boolean) -> Unit) {
-        val retrofitManager = RetrofitManagerForHourlyForecast()
+    private fun writeHourlyForecastDataIntoJson(
+        context: Context,
+        currentDate: String,
+        done: (Boolean) -> Unit) {
+
+        val retrofitManager = RetrofitManagerForHourlyForecast(context)
         val listOfHourlyForecastItems = arrayListOf<HourlyForecastItem>()
+        val currentDateInMillis = currentDate.replace(".json", "").toLong()
 
         PreferencesManager.instance(context).let { prefs ->
             if (prefs.preferencesIsEmpty()) return
@@ -94,7 +110,7 @@ class YesterdayFragment private constructor() : Fragment(), UpdateLocationListen
             retrofitManager.getHourlyForecast(latitude, longitude) { modelApi ->
                 listOfHourlyForecastItems.clear()
                 modelApi.listOfHourlyForecast.filter {
-                    isDateEqualsCurrentDate(currentDateWithoutTimeInMillis, it.date) }.forEach {
+                    isDateEqualsCurrentDate(currentDateInMillis, it.date) }.forEach {
                         hourly -> listOfHourlyForecastItems.add(hourly.mapToItem())
                 }
 
@@ -108,9 +124,8 @@ class YesterdayFragment private constructor() : Fragment(), UpdateLocationListen
     private fun readDataFromJson(context: Context, currentDate: String) {
         writeHourlyForecastDataIntoJson(context, currentDate) { result ->
             if (result) {
-                val files = File(context.filesDir, "/").listFiles()
-                files?.let {
-                    JsonHelper.readDataFromJson(context, it[0].name) { items ->
+                File(context.filesDir, "/").listFiles()?.let { files ->
+                    JsonHelper.readDataFromJson(context, files[0].name) { items ->
                         recyclerAdapter.setData(items)
                     }
                 }
@@ -138,7 +153,7 @@ class YesterdayFragment private constructor() : Fragment(), UpdateLocationListen
         }
     }
 
-    override fun loadLocationData() {
+    override fun reloadData() {
         showHourlyForecast()
     }
 }

@@ -21,7 +21,9 @@ fun Context.checkPermissions(
     performIfSomeDenied: (Array<String>) -> Unit = {}) {
 
     val deniedPermissionIds =
-        permissions.filter { (ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_DENIED) }
+        permissions.filter {
+            (ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_DENIED)
+        }
 
     if (deniedPermissionIds.isEmpty())
         performIfAllIsGranted()
@@ -31,61 +33,38 @@ fun Context.checkPermissions(
 
 fun WeatherModelForSearchList.mapToItem(locations: List<LocationModel>) : WeatherItem {
     val cityName = locations.filter { link.contains(it.cityKey) }.first().cityName
-    val date = Date(epochTime * 1000L)
-    val dateWithPattern = SimpleDateFormat(DATE_FORMAT_FOR_CURRENT_FORECAST, Locale.ENGLISH).format(date)
-    return WeatherItem(cityName, weatherIconId, temperature.metric.value.toInt(), dateWithPattern)
+    return WeatherItem(cityName, weatherIconIdFormat(weatherIconId),
+        temperatureFormat(temperature.metric.value),
+        formattedDate(DATE_FORMAT_FOR_CURRENT_FORECAST, epochTime, false))
 }
 
 fun WeatherModelForFixedList.mapToItem() : WeatherItem {
-    val date = Date(date * 1000L)
-    val dateWithPatten = SimpleDateFormat(DATE_FORMAT_FOR_CURRENT_FORECAST, Locale.ENGLISH).format(date)
-    return WeatherItem(cityName, weatherDetails.first().weatherId, main.temperature.toInt(),
-        dateWithPatten)
+    return WeatherItem(cityName, weatherIconIdFormat(weatherDetails.first().weatherId),
+        temperatureFormat(main.temperature),
+        formattedDate(DATE_FORMAT_FOR_CURRENT_FORECAST, date, false))
 }
 
 fun DailyForecast.mapToItem() : DailyForecastItem {
-    val date = Date(date * 1000L)
-
-    val dateWithPattern = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val calendar = Calendar.Builder().apply {
-            setInstant(date)
-        }.build()
-
-        SimpleDateFormat(DATE_FORMAT_FOR_DAILY_FORECAST, Locale.ENGLISH)
-            .format(calendar.time) + postfixFormat(calendar.get(Calendar.DAY_OF_MONTH))
-    } else {
-        SimpleDateFormat(DATE_FORMAT_FOR_CURRENT_FORECAST, Locale.ENGLISH).format(date)
-    }
-
-    return DailyForecastItem(dateWithPattern, temperatureFormat(temp.day),
-        weatherIconIdFormat(weatherDetails[0].weatherID))
+    return DailyForecastItem(
+        formattedDate(DATE_FORMAT_FOR_DAILY_FORECAST, date, true),
+        temperatureFormat(temp.day), weatherIconIdFormat(weatherDetails[0].weatherID))
 }
 
 fun HourlyForecast.mapToItem() : HourlyForecastItem {
-    val date = Date(date * 1000L)
-    val dateWithPattern = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val calendar = Calendar.Builder().apply {
-            setInstant(date)
-        }.build()
+    val hourFormatWithPattern = SimpleDateFormat(HOUR_FORMAT_FOR_DAILY_FORECAST, Locale.ENGLISH)
+        .format(date * 1000L)
 
-        SimpleDateFormat(DATE_FORMAT_FOR_DAILY_FORECAST, Locale.ENGLISH)
-            .format(calendar.time) + postfixFormat(calendar.get(Calendar.DAY_OF_MONTH))
-    } else {
-        SimpleDateFormat(DATE_FORMAT_FOR_DAILY_FORECAST, Locale.ENGLISH).format(date)
-    }
-
-    val hourFormatWithPattern = SimpleDateFormat(HOURLY_FORMAT_FOR_DAILY_FORECAST, Locale.ENGLISH)
-        .format(date)
-
-    return HourlyForecastItem(dateWithPattern, hourFormatWithPattern, temperatureFormat(temp),
+    return HourlyForecastItem(
+        formattedDate(DATE_FORMAT_FOR_DAILY_FORECAST, date, true),
+        hourFormatWithPattern, temperatureFormat(temp),
         weatherIconIdFormat(weatherDetails[0].weatherID))
 }
 
 fun CityNameModel.getCityNameWithFormattedDate() : String {
-    return "$cityName - " + formattedDate(DATE_FORMAT_FOR_DAILY_FORECAST, date)
+    return "$cityName - " + formattedDate(DATE_FORMAT_FOR_DAILY_FORECAST, date, true)
 }
 
-private fun formattedDate(format: String, dateInMillis: Long) : String {
+private fun formattedDate(format: String, dateInMillis: Long, isPostfixNeed: Boolean) : String {
     val date = Date(dateInMillis * 1000L)
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -94,10 +73,11 @@ private fun formattedDate(format: String, dateInMillis: Long) : String {
         }.build()
 
         SimpleDateFormat(format, Locale.ENGLISH)
-            .format(calendar.time) + postfixFormat(calendar.get(Calendar.DAY_OF_MONTH))
+            .format(calendar.time) +
+                if (isPostfixNeed) postfixFormat(calendar.get(Calendar.DAY_OF_MONTH)) else ""
     } else {
         SimpleDateFormat(format, Locale.ENGLISH).format(date) +
-                postfixFormat(date.day)
+                if (isPostfixNeed) postfixFormat(date.day) else ""
     }
 }
 

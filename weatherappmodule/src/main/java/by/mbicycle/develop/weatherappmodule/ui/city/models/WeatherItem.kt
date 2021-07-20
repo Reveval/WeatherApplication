@@ -6,21 +6,21 @@ import android.os.Parcelable
 data class WeatherItem(
     val cityName: String,
     val weatherIcon: Int,
-    val temperature: Int,
+    val temperature: String,
     val date: String)
     : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readInt(),
-        parcel.readInt(),
+        parcel.readString().toString(),
         parcel.readString().toString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(cityName)
         parcel.writeInt(weatherIcon)
-        parcel.writeInt(temperature)
+        parcel.writeString(temperature)
     }
 
     override fun describeContents(): Int {
@@ -36,5 +36,4 @@ data class WeatherItem(
             return arrayOfNulls(size)
         }
     }
-
 }

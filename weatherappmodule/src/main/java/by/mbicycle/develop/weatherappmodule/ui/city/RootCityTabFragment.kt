@@ -8,9 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import by.mbicycle.develop.weatherappmodule.R
+import by.mbicycle.develop.weatherappmodule.UpdateDataListener
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentRootCityTabBinding
 
-class RootCityTabFragment : Fragment() {
+class RootCityTabFragment : Fragment(), UpdateDataListener {
     lateinit var binding: FragmentRootCityTabBinding
 
     override fun onCreateView(
@@ -25,14 +26,19 @@ class RootCityTabFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        navigateToCityFragment()
-    }
-
-    private fun navigateToCityFragment() {
         childFragmentManager.commit {
-            add<CityFragment>(R.id.root_city_fragment_container)
+            add<CityFragment>(R.id.root_city_fragment_container, CityFragment::class.java.simpleName)
             setReorderingAllowed(true)
             addToBackStack(null)
+        }
+    }
+
+    override fun reloadData() {
+        val childFragmentResult = childFragmentManager.findFragmentByTag(CityFragment::class.java.simpleName)
+        childFragmentResult?.let {
+            if (it is UpdateDataListener) {
+                it.reloadData()
+            }
         }
     }
 }

@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import by.mbicycle.develop.weatherappmodule.MainScreenAdapter
 import by.mbicycle.develop.weatherappmodule.R
+import by.mbicycle.develop.weatherappmodule.UpdateDataListener
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentHourlyBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class HourlyFragment : Fragment() {
+class HourlyFragment : Fragment(), UpdateDataListener {
     lateinit var binding: FragmentHourlyBinding
 
     override fun onCreateView(
@@ -29,7 +31,7 @@ class HourlyFragment : Fragment() {
 
         binding.hourlyViewPager.apply {
             adapter = HourlyNavigationAdapter(this@HourlyFragment)
-            currentItem = 1
+            currentItem = 2
         }
 
         TabLayoutMediator(binding.hourlyTabLayout, binding.hourlyViewPager) { tab, position ->
@@ -60,6 +62,18 @@ class HourlyFragment : Fragment() {
 
                         override fun onTabReselected(tab: TabLayout.Tab?) {}
                     })
+                }
+            }
+        }
+    }
+
+    override fun reloadData() {
+        binding.run {
+            (hourlyViewPager.adapter as? HourlyNavigationAdapter)?.getRecentFragmentBy(
+                hourlyViewPager.currentItem)?.let { fragment ->
+
+                if (fragment is UpdateDataListener) {
+                    fragment.reloadData()
                 }
             }
         }

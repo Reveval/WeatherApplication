@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gps_needed_dialog">GPS needed</string>
+    <string name="message_gps_needed">To continue, turn on device location</string>
+    <string name="check_connection_text">Please check your connection to the internet</string>
+    <string name="message_no_connection">No internet connection. Please check your connection and
+        swipe from the top of the screen to refresh the page</string>
+    <string name="message_number_of_requests_exceeded">This app has a limited number of weather
+        forecast requests. Please try again later.</string>
+    <string name="message_not_found">Server could not find what was requested information.
+        Please try again later.</string>
+    <string name="message_servers_errors">An internal server error has occurred. Please try again
+        later</string>
+</resources>

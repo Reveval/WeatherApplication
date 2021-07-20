@@ -30,19 +30,13 @@ class RecyclerAdapterForSearchList :
     }
 
     override fun onBindViewHolder(holder: ViewHolderForSearchList, position: Int) {
-        val weather = weatherList[position]
-        val weatherIconId = when(weather.weatherIcon) {
-            in THUNDERSTORM_ID_RANGE_ACCU_API -> R.drawable.icon_thunder
-            in RAIN_ID_RANGE_ACCU_API -> R.drawable.icon_rainy
-            in CLOUDS_ID_RANGE_ACCU_API -> R.drawable.icon_cloudy
-            else -> R.drawable.icon_sunny
-        }
-
         holder.apply {
-            cityName.text = weather.cityName
-            temperature.text = "+${weather.temperature} C"
-            iconOfWeather.setImageResource(weatherIconId)
-            itemView.setOnClickListener { itemClickListener?.invoke(position, weather) }
+            weatherList[position].let { item ->
+                cityName.text = item.cityName
+                temperature.text = item.temperature
+                iconOfWeather.setImageResource(item.weatherIcon)
+                itemView.setOnClickListener { itemClickListener?.invoke(position, item) }
+            }
         }
     }
 

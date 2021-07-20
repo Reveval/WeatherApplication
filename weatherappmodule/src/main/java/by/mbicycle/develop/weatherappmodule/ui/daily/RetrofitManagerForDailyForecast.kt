@@ -1,22 +1,21 @@
 package by.mbicycle.develop.weatherappmodule.ui.daily
 
-import android.util.Log
-import by.mbicycle.develop.weatherappmodule.BASE_URL_FOR_OPEN_WEATHER_API
-import by.mbicycle.develop.weatherappmodule.BuildConfig
-import by.mbicycle.develop.weatherappmodule.LOG_TAG
-import by.mbicycle.develop.weatherappmodule.CityNameModel
+import android.content.Context
+import by.mbicycle.develop.weatherappmodule.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.Executors
 
-class RetrofitManagerForDailyForecast {
+class RetrofitManagerForDailyForecast(context: Context) {
     private val client = OkHttpClient.Builder().apply {
         addInterceptor(HttpLoggingInterceptor().setLevel(
             if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else
                 HttpLoggingInterceptor.Level.NONE
         ))
+
+        addInterceptor(NetworkConnectionInterceptor(context))
     }.build()
 
     private val retrofit = Retrofit.Builder().apply {
@@ -44,7 +43,6 @@ class RetrofitManagerForDailyForecast {
             if (response.isSuccessful) {
                 response.body()?.let { block(it) }
             } else {
-                Log.d(LOG_TAG, "code: ${response.code()}")
                 block(DailyForecastModelForAPI())
             }
         }

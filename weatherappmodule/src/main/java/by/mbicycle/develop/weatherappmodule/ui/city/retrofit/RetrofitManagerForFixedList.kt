@@ -1,18 +1,32 @@
 package by.mbicycle.develop.weatherappmodule.ui.city.retrofit
 
-import android.util.Log
+import android.content.Context
 import by.mbicycle.develop.weatherappmodule.BASE_URL_FOR_OPEN_WEATHER_API
-import by.mbicycle.develop.weatherappmodule.LOG_TAG
+import by.mbicycle.develop.weatherappmodule.BuildConfig
+import by.mbicycle.develop.weatherappmodule.NetworkConnectionInterceptor
 import by.mbicycle.develop.weatherappmodule.ui.city.api.WeatherApiForFixedList
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherModelForFixedList
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.Executors
 
-class RetrofitManagerForFixedList {
+class RetrofitManagerForFixedList(context: Context) {
+    private val client = OkHttpClient.Builder().apply {
+        addInterceptor(
+            HttpLoggingInterceptor().setLevel(
+            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else
+                HttpLoggingInterceptor.Level.NONE
+        ))
+
+        addInterceptor(NetworkConnectionInterceptor(context))
+    }.build()
+
     private val retrofit = Retrofit.Builder().apply {
         baseUrl(BASE_URL_FOR_OPEN_WEATHER_API)
         addConverterFactory(GsonConverterFactory.create())
+        client(client)
     }.build()
 
     private val weatherAPI = retrofit.create(WeatherApiForFixedList::class.java)
@@ -27,7 +41,6 @@ class RetrofitManagerForFixedList {
                         resultList.add(model)
                     } ?: block(emptyList())
                 } else {
-                    Log.d(LOG_TAG, "code: ${response.code()}")
                     block(emptyList())
                 }
             }

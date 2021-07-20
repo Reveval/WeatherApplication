@@ -4,10 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import by.mbicycle.develop.weatherappmodule.R
-import by.mbicycle.develop.weatherappmodule.CLOUDS_ID_RANGE_OW_API
-import by.mbicycle.develop.weatherappmodule.RAIN_ID_RANGE_OW_API
-import by.mbicycle.develop.weatherappmodule.THUNDERSTORM_ID_RANGE_OW_API
 import by.mbicycle.develop.weatherappmodule.databinding.ListOfFixedCitiesWeatherBinding
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherItem
 
@@ -33,19 +29,13 @@ class RecyclerAdapterForFixedList :
     }
 
     override fun onBindViewHolder(holderForFixedList: ViewHolderForFixedList, position: Int) {
-        val weatherItem = inCities[position]
-        val weatherIconId = when(weatherItem.weatherIcon) {
-            in THUNDERSTORM_ID_RANGE_OW_API -> R.drawable.icon_thunder
-            in RAIN_ID_RANGE_OW_API -> R.drawable.icon_rainy
-            in CLOUDS_ID_RANGE_OW_API -> R.drawable.icon_cloudy
-            else -> R.drawable.icon_sunny
-        }
-
         holderForFixedList.apply {
-            cityName.text = weatherItem.cityName
-            temperature.text = "+${weatherItem.temperature} C"
-            weatherIcon.setImageResource(weatherIconId)
-            itemView.setOnClickListener { itemClickListener?.invoke(position, weatherItem) }
+            inCities[position].let { item ->
+                cityName.text = item.cityName
+                temperature.text = item.temperature
+                weatherIcon.setImageResource(item.weatherIcon)
+                itemView.setOnClickListener { itemClickListener?.invoke(position, item) }
+            }
         }
     }
 

@@ -43,18 +43,11 @@ class InformationFragment : Fragment() {
     }
 
     private fun setSelectedItem(item: WeatherItem) {
-        val weatherIconID = when(item.weatherIcon) {
-            in THUNDERSTORM_ID_RANGE_OW_API, in THUNDERSTORM_ID_RANGE_ACCU_API -> R.drawable.icon_thunder
-            in RAIN_ID_RANGE_OW_API, in RAIN_ID_RANGE_ACCU_API -> R.drawable.icon_rainy
-            in CLOUDS_ID_RANGE_OW_API, in CLOUDS_ID_RANGE_ACCU_API -> R.drawable.icon_cloudy
-            else -> R.drawable.icon_sunny
-        }
-
         binding.apply {
             cityName.text = item.cityName
-            temperatureTextView.text = "+${item.temperature} C"
+            temperatureTextView.text = item.temperature
             dateTextView.text = item.date
-            weatherIconImageView.setImageResource(weatherIconID)
+            weatherIconImageView.setImageResource(item.weatherIcon)
         }
     }
 }

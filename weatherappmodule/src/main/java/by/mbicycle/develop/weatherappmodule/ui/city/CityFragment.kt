@@ -6,11 +6,11 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.Group
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.mbicycle.develop.weatherappmodule.*
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentCityBinding
 import by.mbicycle.develop.weatherappmodule.ui.city.adapters.RecyclerAdapterForFixedList
@@ -19,24 +19,15 @@ import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherItem
 import by.mbicycle.develop.weatherappmodule.ui.city.retrofit.RetrofitManagerForFixedList
 import by.mbicycle.develop.weatherappmodule.ui.city.retrofit.RetrofitManagerForSearchList
 
-class CityFragment : Fragment() {
-    private lateinit var retrofitManagerForFixedList: RetrofitManagerForFixedList
-    private lateinit var retrofitManagerForSearchList: RetrofitManagerForSearchList
-    private lateinit var recyclerAdapterForFixedList: RecyclerAdapterForFixedList
-    private lateinit var recyclerAdapterForSearchList: RecyclerAdapterForSearchList
-    private lateinit var groupMessageNoData: Group
+class CityFragment : Fragment(), UpdateDataListener {
     private lateinit var binding: FragmentCityBinding
+    private lateinit var recyclerViewForFixedList: RecyclerView
+    private lateinit var recyclerViewForSearchList: RecyclerView
+    private val recyclerAdapterForFixedList = RecyclerAdapterForFixedList()
+    private val recyclerAdapterForSearchList = RecyclerAdapterForSearchList()
     private val citiesIDs = arrayListOf(HOMYEL_ID, MINSK_ID, NEW_YORK_ID, TOKYO_ID, LONDON_ID,
-        PARIS_ID, SYDNEY_ID, LOS_ANGELES_ID
-    )
-
+        PARIS_ID, SYDNEY_ID, LOS_ANGELES_ID)
     private val weatherItems = arrayListOf<WeatherItem>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        retrofitManagerForFixedList = RetrofitManagerForFixedList()
-        retrofitManagerForSearchList = RetrofitManagerForSearchList()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,35 +47,51 @@ class CityFragment : Fragment() {
             }
         }
 
-        recyclerAdapterForFixedList = RecyclerAdapterForFixedList()
-        recyclerAdapterForSearchList = RecyclerAdapterForSearchList()
-        groupMessageNoData = binding.groupMessageNoData
-        val searchResult = binding.searchResultsTextView
-
-
-        val recyclerViewForFixedList = binding.recyclerOfFixedCitiesWeathers
-        recyclerViewForFixedList.apply {
+        recyclerViewForFixedList = binding.recyclerOfFixedCitiesWeathers.apply {
             layoutManager = GridLayoutManager(activity, 2)
             adapter = recyclerAdapterForFixedList
             overScrollMode = View.OVER_SCROLL_NEVER
         }
 
-        val recyclerViewForSearchList = binding.recyclerOfSearchCitiesWeathers
-        recyclerViewForSearchList.apply {
+        recyclerViewForSearchList = binding.recyclerOfSearchCitiesWeathers.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = recyclerAdapterForSearchList
             overScrollMode = View.OVER_SCROLL_NEVER
         }
 
-        retrofitManagerForFixedList.getDataForFixedList(citiesIDs) {
-            weatherItems.clear()
-            it.forEach { model ->
-                val item = model.mapToItem()
-                weatherItems.add(item)
-            }
+        binding.citySwipeRefresh.apply {
+            setOnRefreshListener {
+                activity?.let {
+                    if(it is SwipeRefreshListener) {
+                        it.updateData()
+                    }
+                }
 
-            Handler(Looper.getMainLooper()).post {
-                recyclerAdapterForFixedList.setWeatherData(weatherItems)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (isRefreshing) isRefreshing = false
+                }, 1000L)
+            }
+        }
+
+        showCurrentForecast()
+    }
+
+    private fun showCurrentForecast() {
+        val retrofitManagerForFixedList = context?.let { RetrofitManagerForFixedList(it) } ?:
+            RetrofitManagerForFixedList((requireContext()))
+        val retrofitManagerForSearchList = context?.let { RetrofitManagerForSearchList(it) } ?:
+            RetrofitManagerForSearchList((requireContext()))
+        val groupMessageNoData = binding.groupMessageNoData
+        val searchResult = binding.searchResultsTextView
+
+        retrofitManagerForFixedList.let {
+            it.getDataForFixedList(citiesIDs) { modelsList ->
+                weatherItems.clear()
+                modelsList.forEach { model -> weatherItems.add(model.mapToItem()) }
+
+                Handler(Looper.getMainLooper()).post {
+                    recyclerAdapterForFixedList.setWeatherData(weatherItems)
+                }
             }
         }
 
@@ -110,7 +117,6 @@ class CityFragment : Fragment() {
                         groupMessageNoData.apply {
                             visibility = View.VISIBLE
                             binding.textNoDataTextView.text = "No data for $searchTerm"
-                            return@getLocationForSearchList
                         }
                     } else {
                         recyclerViewForFixedList.visibility = View.GONE
@@ -118,6 +124,7 @@ class CityFragment : Fragment() {
                         recyclerViewForSearchList.visibility = View.VISIBLE
                         groupMessageNoData.visibility = View.GONE
                     }
+
                     retrofitManagerForSearchList.getWeatherDataForSearchList(locations.map { it.cityKey }) { models ->
                         models.forEach { model ->
                             val item = model.mapToItem(locations)
@@ -149,5 +156,9 @@ class CityFragment : Fragment() {
             setReorderingAllowed(true)
             addToBackStack(null)
         }
+    }
+
+    override fun reloadData() {
+        showCurrentForecast()
     }
 }

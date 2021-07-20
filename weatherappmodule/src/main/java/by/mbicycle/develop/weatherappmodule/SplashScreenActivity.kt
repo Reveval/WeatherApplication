@@ -75,10 +75,10 @@ class SplashScreenActivity : AppCompatActivity() {
     private fun initTransitionToMainScreen() {
         PreferencesManager.instance(this).apply {
             eraseData()
-            LocationController(this@SplashScreenActivity) { location ->
+            /*LocationController(this@SplashScreenActivity) { location ->
                 saveData(CoordinatesKeys.LONGITUDE, location.longitude.toFloat())
                 saveData(CoordinatesKeys.LATITUDE, location.latitude.toFloat())
-            }
+            }*/
         }
 
         binding.apply {

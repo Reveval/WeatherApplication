@@ -20,6 +20,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="0dp"
         android:layout_height="49dp"
+        app:tabTextAppearance="@style/main_tab_layout_style"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

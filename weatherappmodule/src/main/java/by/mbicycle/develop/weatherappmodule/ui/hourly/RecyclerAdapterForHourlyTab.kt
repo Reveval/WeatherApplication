@@ -30,7 +30,7 @@ class RecyclerAdapterForHourlyTab :
         holder.apply {
             hour.text = item.hour
             temperature.text = item.temperature
-            icon.setImageResource(item.weatherId)
+            icon.setImageDrawable(icon.resources.getDrawable(item.weatherId))
         }
     }
 

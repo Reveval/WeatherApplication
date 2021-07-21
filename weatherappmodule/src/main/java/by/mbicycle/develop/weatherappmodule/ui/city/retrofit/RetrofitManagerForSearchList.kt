@@ -52,13 +52,11 @@ class RetrofitManagerForSearchList(context: Context) {
                         } ?: emptyList()
                     )
                 } else {
-                    Log.d(LOG_TAG, "code: ${response.code()}")
                     block(emptyList())
                 }
             }
 
             override fun onFailure(call: Call<List<LocationModel>>, t: Throwable) {
-                Log.d(LOG_TAG, "error: $t")
                 block(emptyList())
             }
         })
@@ -67,15 +65,19 @@ class RetrofitManagerForSearchList(context: Context) {
     fun getWeatherDataForSearchList(citiesKeys: List<String>, block:
         (List<WeatherModelForSearchList>) -> Unit) {
         val resultList = arrayListOf<WeatherModelForSearchList>()
+        resultList.clear()
         Executors.newCachedThreadPool().submit {
             citiesKeys.forEach {
-                val response = weatherAPI.getWeatherForSearchList(it).execute()
-                if (response.isSuccessful) {
-                    response.body()?.let { list ->
-                        resultList.add(list.first())
-                    } ?: block(emptyList())
-                } else {
-                    Log.d(LOG_TAG, "code: ${response.code()}")
+                try {
+                    val response = weatherAPI.getWeatherForSearchList(it).execute()
+                    if (response.isSuccessful) {
+                        response.body()?.let { list ->
+                            resultList.add(list.first())
+                        } ?: block(emptyList())
+                    } else {
+                        block(emptyList())
+                    }
+                } catch (ex: Exception) {
                     block(emptyList())
                 }
             }

@@ -58,29 +58,49 @@ class DailyFragment : Fragment(), UpdateDataListener {
         val listOfDailyForecastItems = arrayListOf<DailyForecastItem>()
 
         context?.let { ctx ->
+            binding.progressContainer.root.visibility = View.VISIBLE
+
             PreferencesManager.instance(ctx).let { prefs ->
 
-                if (prefs.preferencesIsEmpty()) return
+                isNeedToShowMessageNoUpdate(prefs.preferencesIsEmpty())
 
                 val latitude = prefs.loadData(CoordinatesKeys.LATITUDE)
                 val longitude = prefs.loadData(CoordinatesKeys.LONGITUDE)
 
                 retrofitManager.getCityName(latitude, longitude) { model ->
+                    isNeedToShowMessageNoUpdate(model.cityName.isEmpty())
+
                     Handler(Looper.getMainLooper()).post {
                         binding.cityNameTextView.text = model.cityName
                     }
                 }
 
                 retrofitManager.getDailyForecast(latitude, longitude) { modelApi ->
+                    isNeedToShowMessageNoUpdate(modelApi.listOfDailyForecast.isEmpty())
+
                     listOfDailyForecastItems.clear()
                     modelApi.listOfDailyForecast.forEach { daily ->
                         listOfDailyForecastItems.add(daily.mapToItem())
                     }
 
                     Handler(Looper.getMainLooper()).post {
+                        binding.progressContainer.root.visibility = View.GONE
                         recyclerAdapter.setData(listOfDailyForecastItems)
                     }
                 }
+            }
+        }
+    }
+
+    private fun isNeedToShowMessageNoUpdate(predicate: Boolean) {
+        Handler(Looper.getMainLooper()).post {
+            if (predicate) {
+                binding.apply {
+                    progressContainer.root.visibility = View.GONE
+                    messageCannotGetUpdateForDaily.root.visibility = View.VISIBLE
+                }
+            } else {
+                binding.messageCannotGetUpdateForDaily.root.visibility = View.GONE
             }
         }
     }

@@ -17,8 +17,8 @@
         android:id="@+id/imageView"
         android:layout_width="215dp"
         android:layout_height="140dp"
-        android:layout_marginTop="311dp"
-        android:background="@drawable/logo"
+        android:background="@drawable/ic_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,6 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/app_name"
+        android:textAppearance="@style/weatherapp_title"
+        android:fontFamily="@font/app_custom_font"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -37,5 +39,10 @@
         android:id="@+id/message_no_location"
         layout="@layout/message_no_location"
         android:visibility="gone"/>
+
+    <include
+        android:id="@+id/progress_container"
+        layout="@layout/progress_bar"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

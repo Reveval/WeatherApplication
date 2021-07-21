@@ -9,8 +9,6 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices
 
-const val REQUEST_CHECK_LOCATION_SETTINGS = 9738
-
 @SuppressLint("MissingPermission")
 class LocationController(val activity: Activity) {
     private val defaultLocation = Location("").apply {
@@ -31,16 +29,13 @@ class LocationController(val activity: Activity) {
         val client = LocationServices.getSettingsClient(activity)
         val task = client.checkLocationSettings(builder.build())
 
-        task.addOnSuccessListener { locationSettingsResponse ->
-            isGpsAvailable(true)
-            Logger.log("All location settings are satisfied")
-        }
+        task.addOnSuccessListener { isGpsAvailable(true) }
 
         task.addOnFailureListener { exception ->
             isGpsAvailable(false)
             if (exception is ResolvableApiException) {
                 try {
-                    exception.startResolutionForResult(activity, REQUEST_CHECK_LOCATION_SETTINGS)
+                    exception.startResolutionForResult(activity, REQUEST_CODE_CHECK_LOCATION_SETTINGS)
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Logger.log(sendEx.message.toString())
                 }

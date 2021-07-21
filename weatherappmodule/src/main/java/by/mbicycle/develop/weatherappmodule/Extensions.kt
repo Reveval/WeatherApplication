@@ -61,7 +61,7 @@ fun HourlyForecast.mapToItem() : HourlyForecastItem {
 }
 
 fun CityNameModel.getCityNameWithFormattedDate() : String {
-    return "$cityName - " + formattedDate(DATE_FORMAT_FOR_DAILY_FORECAST, date, true)
+    return if (cityName.isEmpty()) "" else "$cityName - " + formattedDate(DATE_FORMAT_FOR_DAILY_FORECAST, date, true)
 }
 
 private fun formattedDate(format: String, dateInMillis: Long, isPostfixNeed: Boolean) : String {
@@ -92,10 +92,10 @@ private fun postfixFormat(dayOfMonth: Int) : String {
 
 private fun weatherIconIdFormat(weatherId: Int) : Int {
     return when(weatherId) {
-        in THUNDERSTORM_ID_RANGE_OW_API, in THUNDERSTORM_ID_RANGE_ACCU_API -> R.drawable.icon_thunder
-        in RAIN_ID_RANGE_OW_API, in RAIN_ID_RANGE_ACCU_API -> R.drawable.icon_rainy
-        in CLOUDS_ID_RANGE_OW_API, in CLOUDS_ID_RANGE_ACCU_API -> R.drawable.icon_cloudy
-        else -> R.drawable.icon_sunny
+        in THUNDERSTORM_ID_RANGE_OW_API, in THUNDERSTORM_ID_RANGE_ACCU_API -> R.drawable.ic_thunder
+        in RAIN_ID_RANGE_OW_API, in RAIN_ID_RANGE_ACCU_API -> R.drawable.ic_rainy
+        in CLOUDS_ID_RANGE_OW_API, in CLOUDS_ID_RANGE_ACCU_API -> R.drawable.ic_cloudy
+        else -> R.drawable.ic_sunny
     }
 }
 

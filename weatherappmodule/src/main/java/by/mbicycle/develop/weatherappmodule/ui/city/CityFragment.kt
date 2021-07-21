@@ -82,12 +82,18 @@ class CityFragment : Fragment(), UpdateDataListener {
         val retrofitManagerForSearchList = context?.let { RetrofitManagerForSearchList(it) } ?:
             RetrofitManagerForSearchList((requireContext()))
 
+        binding.progressContainer.root.visibility = View.VISIBLE
+
         retrofitManagerForFixedList.let {
             it.getDataForFixedList(citiesIDs) { modelsList ->
+
+                isNeedToShowMessageNoUpdate(modelsList.isEmpty())
+
                 weatherItems.clear()
                 modelsList.forEach { model -> weatherItems.add(model.mapToItem()) }
 
                 Handler(Looper.getMainLooper()).post {
+                    binding.progressContainer.root.visibility = View.GONE
                     recyclerAdapterForFixedList.setWeatherData(weatherItems)
                 }
             }
@@ -108,11 +114,13 @@ class CityFragment : Fragment(), UpdateDataListener {
                     return
                 }
 
+                binding.progressContainer.root.visibility = View.VISIBLE
                 retrofitManagerForSearchList.getLocationForSearchList(searchTerm) { locations ->
                     if (locations.isEmpty()) {
                         binding.apply {
                             recyclerOfFixedCitiesWeathers.visibility = View.GONE
                             groupViewForSearchList.visibility = View.GONE
+                            noUpdateForCityTab.root.visibility = View.GONE
                             messageNoDataForCity.let {
                                 it.root.visibility = View.VISIBLE
                                 it.textNoDataTextView.text = "No data for $searchTerm"
@@ -127,12 +135,14 @@ class CityFragment : Fragment(), UpdateDataListener {
                     }
 
                     retrofitManagerForSearchList.getWeatherDataForSearchList(locations.map { it.cityKey }) { models ->
+                        weatherItems.clear()
                         models.forEach { model ->
                             val item = model.mapToItem(locations)
                             weatherItems.add(item)
                         }
 
                         Handler(Looper.getMainLooper()).post {
+                            binding.progressContainer.root.visibility = View.GONE
                             recyclerAdapterForSearchList.setWeatherData(weatherItems)
                         }
                     }
@@ -147,6 +157,19 @@ class CityFragment : Fragment(), UpdateDataListener {
 
         recyclerAdapterForFixedList.itemClickListener = { _, data ->
             itemClickedActions(data)
+        }
+    }
+
+    private fun isNeedToShowMessageNoUpdate(predicate: Boolean) {
+        Handler(Looper.getMainLooper()).post {
+            if (predicate) {
+                binding.apply {
+                    progressContainer.root.visibility = View.GONE
+                    noUpdateForCityTab.root.visibility = View.VISIBLE
+                }
+            } else {
+                binding.noUpdateForCityTab.root.visibility = View.GONE
+            }
         }
     }
 

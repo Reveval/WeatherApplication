@@ -1,10 +1,10 @@
 package by.mbicycle.develop.weatherappmodule
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.content.res.AppCompatResources
 import by.mbicycle.develop.weatherappmodule.databinding.ActivityMainScreenBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import java.util.*
@@ -27,6 +27,13 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener, Swi
             }
 
             TabLayoutMediator(tabLayout, mainScreenViewPager) { tab, position ->
+                tab.icon = when(position) {
+                    0 -> AppCompatResources.getDrawable(this@MainScreenActivity, R.drawable.ic_city_tab)
+                    1 -> AppCompatResources.getDrawable(this@MainScreenActivity, R.drawable.ic_daily_tab)
+                    2 -> AppCompatResources.getDrawable(this@MainScreenActivity, R.drawable.ic_hourly_tab)
+                    else -> throw IllegalStateException()
+                }
+
                 tab.text = when(position) {
                     0 -> getString(R.string.city_tab_name)
                     1 -> getString(R.string.daily_tab_name)

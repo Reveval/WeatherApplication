@@ -17,10 +17,10 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/hourly_tab_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="156dp"
         android:layout_height="34dp"
         android:layout_marginTop="41dp"
-        app:tabTextAppearance="@style/MineCustomTabText"
+        app:tabTextAppearance="@style/hourly_tab_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

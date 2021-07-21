@@ -28,22 +28,33 @@ class RetrofitManagerForDailyForecast(context: Context) {
 
     fun getCityName(lat: Double, lon: Double, block: (CityNameModel) -> Unit) {
         Executors.newCachedThreadPool().submit {
-            val response = dailyForecastApi.getCityName(lat, lon).execute()
-            if (response.isSuccessful) {
-                response.body()?.let { block(it) }
-            } else {
+            try {
+                val response = dailyForecastApi.getCityName(lat, lon).execute()
+
+                if (response.isSuccessful) {
+                    response.body()?.let { block(it) }
+                } else {
+                    block(CityNameModel())
+                }
+            } catch (ex: Exception) {
                 block(CityNameModel())
+                Logger.log(ex.message.toString())
             }
         }
     }
 
     fun getDailyForecast(lat: Double, lon: Double, block: (DailyForecastModelForAPI) -> Unit) {
         Executors.newCachedThreadPool().submit {
-            val response = dailyForecastApi.getDailyForecast(lat, lon).execute()
-            if (response.isSuccessful) {
-                response.body()?.let { block(it) }
-            } else {
+            try {
+                val response = dailyForecastApi.getDailyForecast(lat, lon).execute()
+                if (response.isSuccessful) {
+                    response.body()?.let { block(it) }
+                } else {
+                    block(DailyForecastModelForAPI())
+                }
+            } catch (ex: Exception) {
                 block(DailyForecastModelForAPI())
+                Logger.log(ex.message.toString())
             }
         }
     }

@@ -60,19 +60,25 @@ class TodayFragment private constructor() : Fragment(), UpdateDataListener {
         val listOfHourlyForecastItems = arrayListOf<HourlyForecastItem>()
 
         context?.let { ctx ->
+            binding.progressContainer.progressBarGroup.visibility = View.VISIBLE
+
             PreferencesManager.instance(ctx).let { prefs ->
-                if (prefs.preferencesIsEmpty()) return
+                isNeedToShowMessageNoUpdate(prefs.preferencesIsEmpty())
 
                 val latitude = prefs.loadData(CoordinatesKeys.LATITUDE)
                 val longitude = prefs.loadData(CoordinatesKeys.LONGITUDE)
 
                 retrofitManager.getCityName(latitude, longitude) { cityModel ->
+                    isNeedToShowMessageNoUpdate(cityModel.cityName.isEmpty())
+
                     PreferencesForHourlyTab.instance(ctx).apply {
                         saveData(HourlyTabsPrefsKeys.TODAY, cityModel.getCityNameWithFormattedDate())
                     }
                 }
 
                 retrofitManager.getHourlyForecast(latitude, longitude) { modelApi ->
+                    isNeedToShowMessageNoUpdate(modelApi.listOfHourlyForecast.isEmpty())
+
                     listOfHourlyForecastItems.clear()
 
                     modelApi.listOfHourlyForecast.filter { isDateEqualsCurrentDate(it.date) }.forEach { hourly ->
@@ -80,9 +86,23 @@ class TodayFragment private constructor() : Fragment(), UpdateDataListener {
                     }
 
                     Handler(Looper.getMainLooper()).post {
+                        binding.progressContainer.progressBarGroup.visibility = View.GONE
                         recyclerAdapter.setData(listOfHourlyForecastItems)
                     }
                 }
+            }
+        }
+    }
+
+    private fun isNeedToShowMessageNoUpdate(predicate: Boolean) {
+        Handler(Looper.getMainLooper()).post {
+            if (predicate) {
+                binding.apply {
+                    progressContainer.progressBarGroup.visibility = View.GONE
+                    messageCannotUpdateForTodayTab.root.visibility = View.VISIBLE
+                }
+            } else {
+                binding.messageCannotUpdateForTodayTab.root.visibility = View.GONE
             }
         }
     }

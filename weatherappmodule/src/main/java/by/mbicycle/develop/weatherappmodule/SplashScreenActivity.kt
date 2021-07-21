@@ -1,29 +1,23 @@
 package by.mbicycle.develop.weatherappmodule
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
-import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.net.Uri
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
 import android.provider.Settings
+import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginTop
 import by.mbicycle.develop.weatherappmodule.databinding.ActivitySplashScreenBinding
-import com.google.android.gms.location.LocationSettingsResponse
-import com.google.android.gms.location.LocationSettingsStates
 import java.util.*
-import kotlin.concurrent.timerTask
-
-const val REQUEST_CODE_ACCESS_LOCATION = 2504
 
 class SplashScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashScreenBinding
@@ -65,7 +59,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CHECK_LOCATION_SETTINGS) {
+        if (requestCode == REQUEST_CODE_CHECK_LOCATION_SETTINGS) {
             if (resultCode == RESULT_OK) {
                 initTransitionToMainScreen()
             } else {
@@ -101,12 +95,24 @@ class SplashScreenActivity : AppCompatActivity() {
             }
         }
 
+        val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
+
+            endToEnd = R.id.app_name_text_view
+            startToStart = R.id.app_name_text_view
+            topToBottom = R.id.app_name_text_view
+            topMargin = 40
+        }
+
         binding.apply {
+            progressContainer.root.visibility = View.VISIBLE
+            progressContainer.progressBarGroup.layoutParams = params
             generalViewsOnScreenGroup.visibility = View.VISIBLE
             messageNoLocation.root.visibility = View.GONE
         }
 
         Handler(Looper.getMainLooper()).postDelayed({
+            binding.progressContainer.root.visibility = View.GONE
             startActivity(Intent(this@SplashScreenActivity, MainScreenActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }, 3000L)

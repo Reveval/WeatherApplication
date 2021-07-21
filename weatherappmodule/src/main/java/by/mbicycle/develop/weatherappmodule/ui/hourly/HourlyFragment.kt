@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import by.mbicycle.develop.weatherappmodule.Logger
 import by.mbicycle.develop.weatherappmodule.MainScreenAdapter
 import by.mbicycle.develop.weatherappmodule.R
 import by.mbicycle.develop.weatherappmodule.UpdateDataListener
@@ -40,28 +41,29 @@ class HourlyFragment : Fragment(), UpdateDataListener {
                 1 -> getString(R.string.today_tab_name)
                 else -> throw IllegalStateException()
             }
+
+            setCityNameAndDate(position)
         }.attach()
 
+        binding.hourlyTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.let { setCityNameAndDate(it.position) }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
+    private fun setCityNameAndDate(position: Int) {
         Handler(Looper.getMainLooper()).post {
-            context?.let { context ->
-                val prefs = PreferencesForHourlyTab.instance(context)
-                binding.run {
-                    hourlyCityAndDateTextView.text = prefs.loadData(HourlyTabsPrefsKeys.TODAY)
-                    hourlyTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                        override fun onTabSelected(tab: TabLayout.Tab?) {
-                            tab?.let {
-                                hourlyCityAndDateTextView.text = when(tab.position) {
-                                    0 -> prefs.loadData(HourlyTabsPrefsKeys.YESTERDAY)
-                                    1 -> prefs.loadData(HourlyTabsPrefsKeys.TODAY)
-                                    else -> ""
-                                }
-                            }
-                        }
-
-                        override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-                        override fun onTabReselected(tab: TabLayout.Tab?) {}
-                    })
+            context?.let {
+                val prefs = PreferencesForHourlyTab.instance(it)
+                binding.hourlyCityAndDateTextView.text = when(position) {
+                    0 -> prefs.loadData(HourlyTabsPrefsKeys.YESTERDAY)
+                    1 -> prefs.loadData(HourlyTabsPrefsKeys.TODAY)
+                    else -> ""
                 }
             }
         }

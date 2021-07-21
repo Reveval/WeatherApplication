@@ -32,10 +32,14 @@ class RetrofitManagerForHourlyForecast(context: Context) {
 
     fun getCityName(lat: Double, lon: Double, block: (CityNameModel) -> Unit) {
         Executors.newCachedThreadPool().submit {
-            val response = hourlyForecastApi.getCityName(lat, lon).execute()
-            if (response.isSuccessful) {
-                response.body()?.let { block(it) }
-            } else {
+            try {
+                val response = hourlyForecastApi.getCityName(lat, lon).execute()
+                if (response.isSuccessful) {
+                    response.body()?.let { block(it) }
+                } else {
+                    block(CityNameModel())
+                }
+            } catch (ex: Exception) {
                 block(CityNameModel())
             }
         }
@@ -43,10 +47,14 @@ class RetrofitManagerForHourlyForecast(context: Context) {
 
     fun getHourlyForecast(lat: Double, lon: Double, block: (HourlyForecastApiImpl) -> Unit) {
         Executors.newCachedThreadPool().submit {
-            val response = hourlyForecastApi.getHourlyForecast(lat, lon).execute()
-            if (response.isSuccessful) {
-                response.body()?.let { block(it) }
-            } else {
+            try {
+                val response = hourlyForecastApi.getHourlyForecast(lat, lon).execute()
+                if (response.isSuccessful) {
+                    response.body()?.let { block(it) }
+                } else {
+                    block(HourlyForecastApiImpl())
+                }
+            } catch (ex: Exception) {
                 block(HourlyForecastApiImpl())
             }
         }

@@ -35,12 +35,16 @@ class RetrofitManagerForFixedList(context: Context) {
         val resultList = arrayListOf<WeatherModelForFixedList>()
         Executors.newCachedThreadPool().submit {
             citiesIDs.forEach {
-                val response = weatherAPI.getWeatherForFixedList(it).execute()
-                if (response.isSuccessful) {
-                    response.body()?.let { model ->
-                        resultList.add(model)
-                    } ?: block(emptyList())
-                } else {
+                try {
+                    val response = weatherAPI.getWeatherForFixedList(it).execute()
+                    if (response.isSuccessful) {
+                        response.body()?.let { model ->
+                            resultList.add(model)
+                        } ?: block(emptyList())
+                    } else {
+                        block(emptyList())
+                    }
+                } catch (ex: Exception) {
                     block(emptyList())
                 }
             }

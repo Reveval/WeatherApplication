@@ -72,9 +72,13 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
                 if (listOfFiles.isEmpty()) {
                     readDataFromJson(context, currentDateWithPostfix)
                 } else if (listOfFiles[0].name.equals(currentDateWithPostfix) || listOfFiles[0].name.equals(yesterdayDateWithPostfix)) {
+                    binding.progressContainer.root.visibility = View.VISIBLE
                     File(context.filesDir, "/").listFiles()?.let {
                         JsonHelper.readDataFromJson(context, it[0].name) { items ->
-                            recyclerAdapter.setData(items)
+                            Handler(Looper.getMainLooper()).post {
+                                binding.progressContainer.root.visibility = View.GONE
+                                recyclerAdapter.setData(items)
+                            }
                         }
                     }
                 } else {
@@ -96,18 +100,22 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
         val currentDateInMillis = currentDate.replace(".json", "").toLong()
 
         PreferencesManager.instance(context).let { prefs ->
-            if (prefs.preferencesIsEmpty()) return
+            isNeedToShowMessageNoUpdate(prefs.preferencesIsEmpty())
 
             val latitude = prefs.loadData(CoordinatesKeys.LATITUDE)
             val longitude = prefs.loadData(CoordinatesKeys.LONGITUDE)
 
             retrofitManager.getCityName(latitude, longitude) { cityModel ->
+                isNeedToShowMessageNoUpdate(cityModel.cityName.isEmpty())
+
                 PreferencesForHourlyTab.instance(context).apply{
                     saveData(HourlyTabsPrefsKeys.YESTERDAY, cityModel.getCityNameWithFormattedDate())
                 }
             }
 
             retrofitManager.getHourlyForecast(latitude, longitude) { modelApi ->
+                isNeedToShowMessageNoUpdate(modelApi.listOfHourlyForecast.isEmpty())
+
                 listOfHourlyForecastItems.clear()
                 modelApi.listOfHourlyForecast.filter {
                     isDateEqualsCurrentDate(currentDateInMillis, it.date) }.forEach {
@@ -121,16 +129,31 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
         }
     }
 
+    private fun isNeedToShowMessageNoUpdate(predicate: Boolean) {
+        Handler(Looper.getMainLooper()).post {
+            if (predicate) {
+                binding.apply {
+                    progressContainer.root.visibility = View.GONE
+                    messageCannotGetUpdateForYesterdayTab.root.visibility = View.VISIBLE
+                }
+            } else {
+                binding.messageCannotGetUpdateForYesterdayTab.root.visibility = View.GONE
+            }
+        }
+    }
+
     private fun readDataFromJson(context: Context, currentDate: String) {
+        binding.progressContainer.root.visibility = View.VISIBLE
         writeHourlyForecastDataIntoJson(context, currentDate) { result ->
             if (result) {
                 File(context.filesDir, "/").listFiles()?.let { files ->
                     JsonHelper.readDataFromJson(context, files[0].name) { items ->
-                        recyclerAdapter.setData(items)
+                        Handler(Looper.getMainLooper()).post {
+                            binding.progressContainer.root.visibility = View.GONE
+                            recyclerAdapter.setData(items)
+                        }
                     }
                 }
-            } else {
-                //обработать
             }
         }
     }

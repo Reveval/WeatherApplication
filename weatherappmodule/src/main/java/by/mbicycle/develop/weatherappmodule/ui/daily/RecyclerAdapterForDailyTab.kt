@@ -31,7 +31,7 @@ class RecyclerAdapterForDailyTab :
         holder.apply {
             date.text = item.date
             temperature.text = item.temperature
-            iconOfWeather.setImageResource(item.weatherId)
+            iconOfWeather.setImageDrawable(iconOfWeather.resources.getDrawable(item.weatherId))
         }
     }
 

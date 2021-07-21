@@ -25,8 +25,8 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <include
-        android:id="@+id/message_no_data"
-        layout="@layout/message_no_data"
+        android:id="@+id/message_no_location"
+        layout="@layout/message_no_location"
         android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

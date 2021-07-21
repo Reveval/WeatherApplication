@@ -36,8 +36,6 @@ class TodayFragment private constructor() : Fragment(), UpdateDataListener {
             overScrollMode = View.OVER_SCROLL_NEVER
         }
 
-        showHourlyForecast()
-
         binding.todaySwipeRefresh.apply {
             setOnRefreshListener {
                 activity?.let {
@@ -51,6 +49,8 @@ class TodayFragment private constructor() : Fragment(), UpdateDataListener {
                 }, 1000L)
             }
         }
+
+        showHourlyForecast()
     }
 
     @SuppressLint("MissingPermission")

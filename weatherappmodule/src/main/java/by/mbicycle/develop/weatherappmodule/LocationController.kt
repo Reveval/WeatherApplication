@@ -1,15 +1,18 @@
 package by.mbicycle.develop.weatherappmodule
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Activity
+import android.content.IntentSender
 import android.location.Location
-import android.location.LocationManager
 import android.os.Looper
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices
 
+const val REQUEST_CHECK_LOCATION_SETTINGS = 9738
+
 @SuppressLint("MissingPermission")
-class LocationController(val context: Context) {
+class LocationController(val activity: Activity) {
     private val defaultLocation = Location("").apply {
         latitude = 0.0
         longitude = 0.0
@@ -22,9 +25,27 @@ class LocationController(val context: Context) {
         smallestDisplacement = 1.0F
     }
 
-    fun isGpsAvailable() : Boolean {
-        return (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).
-            isProviderEnabled(LocationManager.GPS_PROVIDER)
+    fun checkLocationSettings(isGpsAvailable: (Boolean) -> Unit) {
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+        val client = LocationServices.getSettingsClient(activity)
+        val task = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener { locationSettingsResponse ->
+            isGpsAvailable(true)
+            Logger.log("All location settings are satisfied")
+        }
+
+        task.addOnFailureListener { exception ->
+            isGpsAvailable(false)
+            if (exception is ResolvableApiException) {
+                try {
+                    exception.startResolutionForResult(activity, REQUEST_CHECK_LOCATION_SETTINGS)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    Logger.log(sendEx.message.toString())
+                }
+            }
+        }
     }
 
     fun requestLocationUpdate(locationUpdate: (Location) -> Unit) {
@@ -36,7 +57,7 @@ class LocationController(val context: Context) {
             }
         }
 
-        LocationServices.getFusedLocationProviderClient(context).apply {
+        LocationServices.getFusedLocationProviderClient(activity).apply {
             lastLocation.addOnSuccessListener { loc ->
                 loc?.let { locationUpdate(loc) } ?: requestLocationUpdates(locationRequest,
                     locationCallback, Looper.getMainLooper())

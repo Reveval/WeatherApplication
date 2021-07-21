@@ -81,8 +81,6 @@ class CityFragment : Fragment(), UpdateDataListener {
             RetrofitManagerForFixedList((requireContext()))
         val retrofitManagerForSearchList = context?.let { RetrofitManagerForSearchList(it) } ?:
             RetrofitManagerForSearchList((requireContext()))
-        val groupMessageNoData = binding.groupMessageNoData
-        val searchResult = binding.searchResultsTextView
 
         retrofitManagerForFixedList.let {
             it.getDataForFixedList(citiesIDs) { modelsList ->
@@ -101,28 +99,31 @@ class CityFragment : Fragment(), UpdateDataListener {
 
                 if (searchTerm.isEmpty()) {
                     activity?.runOnUiThread {
-                        recyclerViewForFixedList.visibility = View.VISIBLE
-                        searchResult.visibility = View.GONE
-                        recyclerViewForSearchList.visibility = View.GONE
-                        groupMessageNoData.visibility = View.GONE
+                        binding.apply {
+                            recyclerOfFixedCitiesWeathers.visibility = View.VISIBLE
+                            groupViewForSearchList.visibility = View.GONE
+                            messageNoDataForCity.root.visibility = View.GONE
+                        }
                     }
                     return
                 }
 
                 retrofitManagerForSearchList.getLocationForSearchList(searchTerm) { locations ->
                     if (locations.isEmpty()) {
-                        recyclerViewForFixedList.visibility = View.GONE
-                        recyclerViewForSearchList.visibility = View.GONE
-                        searchResult.visibility = View.GONE
-                        groupMessageNoData.apply {
-                            visibility = View.VISIBLE
-                            binding.textNoDataTextView.text = "No data for $searchTerm"
+                        binding.apply {
+                            recyclerOfFixedCitiesWeathers.visibility = View.GONE
+                            groupViewForSearchList.visibility = View.GONE
+                            messageNoDataForCity.let {
+                                it.root.visibility = View.VISIBLE
+                                it.textNoDataTextView.text = "No data for $searchTerm"
+                            }
                         }
                     } else {
-                        recyclerViewForFixedList.visibility = View.GONE
-                        searchResult.visibility = View.VISIBLE
-                        recyclerViewForSearchList.visibility = View.VISIBLE
-                        groupMessageNoData.visibility = View.GONE
+                        binding.apply {
+                            recyclerOfFixedCitiesWeathers.visibility = View.GONE
+                            groupViewForSearchList.visibility = View.VISIBLE
+                            messageNoDataForCity.root.visibility = View.GONE
+                        }
                     }
 
                     retrofitManagerForSearchList.getWeatherDataForSearchList(locations.map { it.cityKey }) { models ->

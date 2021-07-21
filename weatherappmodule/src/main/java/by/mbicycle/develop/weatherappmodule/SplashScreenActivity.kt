@@ -1,22 +1,25 @@
 package by.mbicycle.develop.weatherappmodule
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import by.mbicycle.develop.weatherappmodule.databinding.ActivitySplashScreenBinding
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.location.LocationSettingsStates
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -26,7 +29,7 @@ class SplashScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashScreenBinding
     private val locationPermissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION)
-
+    private val locationController = LocationController(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +47,9 @@ class SplashScreenActivity : AppCompatActivity() {
                 locationPermissions,
 
                 {
-                    initTransitionToMainScreen()
+                    locationController.checkLocationSettings {
+                        if (it) initTransitionToMainScreen()
+                    }
                 },
 
                 { deniedPermissions ->
@@ -52,7 +57,20 @@ class SplashScreenActivity : AppCompatActivity() {
                 }
             )
         } else {
-            initTransitionToMainScreen()
+            locationController.checkLocationSettings {
+                if (it) initTransitionToMainScreen()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CHECK_LOCATION_SETTINGS) {
+            if (resultCode == RESULT_OK) {
+                initTransitionToMainScreen()
+            } else {
+                closingApplication()
+            }
         }
     }
 
@@ -65,7 +83,9 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_ACCESS_LOCATION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                initTransitionToMainScreen()
+                locationController.checkLocationSettings {
+                    if (it) initTransitionToMainScreen()
+                }
             } else {
                 showMessageNoData(permissions)
             }
@@ -75,15 +95,15 @@ class SplashScreenActivity : AppCompatActivity() {
     private fun initTransitionToMainScreen() {
         PreferencesManager.instance(this).apply {
             eraseData()
-            /*LocationController(this@SplashScreenActivity) { location ->
+            locationController.requestLocationUpdate { location ->
                 saveData(CoordinatesKeys.LONGITUDE, location.longitude.toFloat())
                 saveData(CoordinatesKeys.LATITUDE, location.latitude.toFloat())
-            }*/
+            }
         }
 
         binding.apply {
             generalViewsOnScreenGroup.visibility = View.VISIBLE
-            messageNoData.root.visibility = View.GONE
+            messageNoLocation.root.visibility = View.GONE
         }
 
         Handler(Looper.getMainLooper()).postDelayed({
@@ -97,7 +117,7 @@ class SplashScreenActivity : AppCompatActivity() {
         binding.generalViewsOnScreenGroup.visibility = View.GONE
         permissions.forEach { permission ->
             if(shouldShowRequestPermissionRationale(permission)) {
-                binding.messageNoData.apply {
+                binding.messageNoLocation.apply {
                     root.visibility = View.VISIBLE
                     buttonAllowAccess.setOnClickListener {
                         requestPermissions(arrayOf(permission), REQUEST_CODE_ACCESS_LOCATION)

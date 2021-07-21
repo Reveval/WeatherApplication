@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_view_for_search_list"
+        app:constraint_referenced_ids="recycler_of_search_cities_weathers,
+        search_results_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/editText"
@@ -21,7 +30,6 @@
         android:layout_height="42dp"
         android:paddingLeft="24dp"
         android:gravity="fill_vertical"
-        android:visibility="gone"
         android:text="@string/search_result_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,36 +56,19 @@
         android:id="@+id/recycler_of_search_cities_weathers"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_results_text_view" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_message_no_data"
-        app:constraint_referenced_ids="icon_no_data_image_view, text_no_data_text_view"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/message_no_data_for_city"
+        layout="@layout/message_no_data_for_city"
         android:visibility="gone"/>
 
-    <ImageView
-        android:id="@+id/icon_no_data_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/icon_no_data"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="271dp"/>
-
-    <TextView
-        android:id="@+id/text_no_data_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="@+id/icon_no_data_image_view"
-        app:layout_constraintStart_toStartOf="@+id/icon_no_data_image_view"
-        app:layout_constraintTop_toBottomOf="@+id/icon_no_data_image_view" />
+    <include
+        android:id="@+id/no_update_for_city_tab"
+        layout="@layout/message_cannot_get_update"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

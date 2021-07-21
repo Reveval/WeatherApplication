@@ -33,7 +33,6 @@ class DailyFragment : Fragment(), UpdateDataListener {
             adapter = recyclerAdapter
             overScrollMode = View.OVER_SCROLL_NEVER
         }
-        //TODO don't forget to show default empty state
 
         binding.dailySwipeRefresh.apply {
             setOnRefreshListener {
@@ -80,7 +79,6 @@ class DailyFragment : Fragment(), UpdateDataListener {
 
                     Handler(Looper.getMainLooper()).post {
                         recyclerAdapter.setData(listOfDailyForecastItems)
-                        //TODO don't forget to hide default empty view
                     }
                 }
             }

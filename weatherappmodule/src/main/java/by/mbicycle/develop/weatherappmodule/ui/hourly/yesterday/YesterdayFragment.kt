@@ -38,8 +38,6 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
             overScrollMode = View.OVER_SCROLL_NEVER
         }
 
-        showHourlyForecast()
-
         binding.yesterdaySwipeRefresh.apply {
             setOnRefreshListener {
                 activity?.let {
@@ -53,6 +51,8 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
                 }, 1000L)
             }
         }
+
+        showHourlyForecast()
     }
 
     private fun showHourlyForecast() {

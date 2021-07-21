@@ -1,8 +1,10 @@
 package by.mbicycle.develop.weatherappmodule
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import by.mbicycle.develop.weatherappmodule.databinding.ActivityMainScreenBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import java.util.*
@@ -15,8 +17,10 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener, Swi
         binding = ActivityMainScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         binding.apply {
-            messageNoData.root.visibility = View.GONE
+            messageNoLocation.root.visibility = View.GONE
             mainScreenViewPager.apply {
                 adapter = MainScreenAdapter(this@MainScreenActivity)
                 isUserInputEnabled = false

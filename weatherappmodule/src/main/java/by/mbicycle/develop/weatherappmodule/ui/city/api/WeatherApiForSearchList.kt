@@ -12,10 +12,10 @@ private const val API_KEY_SECOND_ACCOUNT = "4j3dNwmrGKb5EGJU84p9wBhSOicWdcEk"
 private const val API_KEY_THIRD_ACCOUNT = "38YmqVqFSSGqlVANilAf6GAxnRri0F5R"
 
 interface WeatherApiForSearchList {
-    @GET("locations/v1/cities/search?apikey=$API_KEY_SECOND_ACCOUNT")
+    @GET("locations/v1/cities/search?apikey=$API_KEY_THIRD_ACCOUNT")
     fun getLocation(@Query("q") searchText: String) : Call<List<LocationModel>>
 
-    @GET("currentconditions/v1/{key}?apikey=$API_KEY_SECOND_ACCOUNT")
+    @GET("currentconditions/v1/{key}?apikey=$API_KEY_THIRD_ACCOUNT")
     fun getWeatherForSearchList(@Path("key") cityKey: String) :
             Call<List<WeatherModelForSearchList>>
 }

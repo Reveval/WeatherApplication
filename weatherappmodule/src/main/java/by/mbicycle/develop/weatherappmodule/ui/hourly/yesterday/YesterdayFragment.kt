@@ -49,7 +49,10 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
                 if (isRefreshing) isRefreshing = false
             }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         showHourlyForecast()
     }
 

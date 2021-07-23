@@ -7,8 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import by.mbicycle.develop.weatherappmodule.Logger
-import by.mbicycle.develop.weatherappmodule.MainScreenAdapter
 import by.mbicycle.develop.weatherappmodule.R
 import by.mbicycle.develop.weatherappmodule.UpdateDataListener
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentHourlyBinding
@@ -42,6 +40,10 @@ class HourlyFragment : Fragment(), UpdateDataListener {
                 else -> throw IllegalStateException()
             }
         }.attach()
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         setCityNameAndDate(1)
 

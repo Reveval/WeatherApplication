@@ -44,9 +44,7 @@ class TodayFragment private constructor() : Fragment(), UpdateDataListener {
                     }
                 }
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (isRefreshing) isRefreshing = false
-                }, 1000L)
+                if (isRefreshing) isRefreshing = false
             }
         }
 
@@ -60,7 +58,7 @@ class TodayFragment private constructor() : Fragment(), UpdateDataListener {
         val listOfHourlyForecastItems = arrayListOf<HourlyForecastItem>()
 
         context?.let { ctx ->
-            binding.progressContainer.progressBarGroup.visibility = View.VISIBLE
+            changeProgressBarVisibility(View.VISIBLE)
 
             PreferencesManager.instance(ctx).let { prefs ->
                 isNeedToShowMessageNoUpdate(prefs.preferencesIsEmpty())
@@ -86,7 +84,7 @@ class TodayFragment private constructor() : Fragment(), UpdateDataListener {
                     }
 
                     Handler(Looper.getMainLooper()).post {
-                        binding.progressContainer.progressBarGroup.visibility = View.GONE
+                        changeProgressBarVisibility(View.GONE)
                         recyclerAdapter.setData(listOfHourlyForecastItems)
                     }
                 }
@@ -98,7 +96,7 @@ class TodayFragment private constructor() : Fragment(), UpdateDataListener {
         Handler(Looper.getMainLooper()).post {
             if (predicate) {
                 binding.apply {
-                    progressContainer.progressBarGroup.visibility = View.GONE
+                    changeProgressBarVisibility(View.GONE)
                     messageCannotUpdateForTodayTab.root.visibility = View.VISIBLE
                 }
             } else {
@@ -135,5 +133,13 @@ class TodayFragment private constructor() : Fragment(), UpdateDataListener {
 
     override fun reloadData() {
         showHourlyForecast()
+    }
+
+    private fun changeProgressBarVisibility(visibility: Int) {
+        activity?.let {
+            if (it is ProgressBarVisibilityListener) {
+                it.setProgressBarVisibility(visibility)
+            }
+        }
     }
 }

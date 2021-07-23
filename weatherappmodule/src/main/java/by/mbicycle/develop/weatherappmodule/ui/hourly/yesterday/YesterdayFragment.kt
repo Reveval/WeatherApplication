@@ -46,9 +46,7 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
                     }
                 }
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (isRefreshing) isRefreshing = false
-                }, 1000L)
+                if (isRefreshing) isRefreshing = false
             }
         }
 
@@ -72,11 +70,11 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
                 if (listOfFiles.isEmpty()) {
                     readDataFromJson(context, currentDateWithPostfix)
                 } else if (listOfFiles[0].name.equals(currentDateWithPostfix) || listOfFiles[0].name.equals(yesterdayDateWithPostfix)) {
-                    binding.progressContainer.root.visibility = View.VISIBLE
                     File(context.filesDir, "/").listFiles()?.let {
+                        changeProgressBarVisibility(View.VISIBLE)
                         JsonHelper.readDataFromJson(context, it[0].name) { items ->
                             Handler(Looper.getMainLooper()).post {
-                                binding.progressContainer.root.visibility = View.GONE
+                                changeProgressBarVisibility(View.GONE)
                                 recyclerAdapter.setData(items)
                             }
                         }
@@ -133,7 +131,7 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
         Handler(Looper.getMainLooper()).post {
             if (predicate) {
                 binding.apply {
-                    progressContainer.root.visibility = View.GONE
+                    changeProgressBarVisibility(View.GONE)
                     messageCannotGetUpdateForYesterdayTab.root.visibility = View.VISIBLE
                 }
             } else {
@@ -143,13 +141,13 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
     }
 
     private fun readDataFromJson(context: Context, currentDate: String) {
-        binding.progressContainer.root.visibility = View.VISIBLE
+        changeProgressBarVisibility(View.VISIBLE)
         writeHourlyForecastDataIntoJson(context, currentDate) { result ->
             if (result) {
                 File(context.filesDir, "/").listFiles()?.let { files ->
                     JsonHelper.readDataFromJson(context, files[0].name) { items ->
                         Handler(Looper.getMainLooper()).post {
-                            binding.progressContainer.root.visibility = View.GONE
+                            changeProgressBarVisibility(View.GONE)
                             recyclerAdapter.setData(items)
                         }
                     }
@@ -178,5 +176,13 @@ class YesterdayFragment private constructor() : Fragment(), UpdateDataListener {
 
     override fun reloadData() {
         showHourlyForecast()
+    }
+
+    private fun changeProgressBarVisibility(visibility: Int) {
+        activity?.let {
+            if (it is ProgressBarVisibilityListener) {
+                it.setProgressBarVisibility(visibility)
+            }
+        }
     }
 }

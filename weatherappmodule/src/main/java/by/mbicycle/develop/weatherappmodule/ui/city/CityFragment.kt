@@ -67,9 +67,7 @@ class CityFragment : Fragment(), UpdateDataListener {
                     }
                 }
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (isRefreshing) isRefreshing = false
-                }, 1000L)
+                if (isRefreshing) isRefreshing = false
             }
         }
 
@@ -82,7 +80,7 @@ class CityFragment : Fragment(), UpdateDataListener {
         val retrofitManagerForSearchList = context?.let { RetrofitManagerForSearchList(it) } ?:
             RetrofitManagerForSearchList((requireContext()))
 
-        binding.progressContainer.root.visibility = View.VISIBLE
+        changeProgressBarVisibility(View.VISIBLE)
 
         retrofitManagerForFixedList.let {
             it.getDataForFixedList(citiesIDs) { modelsList ->
@@ -93,7 +91,7 @@ class CityFragment : Fragment(), UpdateDataListener {
                 modelsList.forEach { model -> weatherItems.add(model.mapToItem()) }
 
                 Handler(Looper.getMainLooper()).post {
-                    binding.progressContainer.root.visibility = View.GONE
+                    changeProgressBarVisibility(View.GONE)
                     recyclerAdapterForFixedList.setWeatherData(weatherItems)
                 }
             }
@@ -114,7 +112,10 @@ class CityFragment : Fragment(), UpdateDataListener {
                     return
                 }
 
-                binding.progressContainer.root.visibility = View.VISIBLE
+                activity?.runOnUiThread {
+                    changeProgressBarVisibility(View.VISIBLE)
+                }
+
                 retrofitManagerForSearchList.getLocationForSearchList(searchTerm) { locations ->
                     if (locations.isEmpty()) {
                         binding.apply {
@@ -142,14 +143,18 @@ class CityFragment : Fragment(), UpdateDataListener {
                         }
 
                         Handler(Looper.getMainLooper()).post {
-                            binding.progressContainer.root.visibility = View.GONE
+
+                            activity?.runOnUiThread {
+                                changeProgressBarVisibility(View.GONE)
+                            }
+
                             recyclerAdapterForSearchList.setWeatherData(weatherItems)
                         }
                     }
                 }
 
             }
-        }, 1000L).attachTo(binding.editText)
+        }, 3000L).attachTo(binding.editText)
 
         recyclerAdapterForSearchList.itemClickListener = { _, data ->
             itemClickedActions(data)
@@ -164,7 +169,7 @@ class CityFragment : Fragment(), UpdateDataListener {
         Handler(Looper.getMainLooper()).post {
             if (predicate) {
                 binding.apply {
-                    progressContainer.root.visibility = View.GONE
+                    changeProgressBarVisibility(View.GONE)
                     noUpdateForCityTab.root.visibility = View.VISIBLE
                 }
             } else {
@@ -184,5 +189,13 @@ class CityFragment : Fragment(), UpdateDataListener {
 
     override fun reloadData() {
         showCurrentForecast()
+    }
+
+    private fun changeProgressBarVisibility(visibility: Int) {
+        activity?.let {
+            if (it is ProgressBarVisibilityListener) {
+                it.setProgressBarVisibility(visibility)
+            }
+        }
     }
 }

@@ -26,9 +26,4 @@
         layout="@layout/message_cannot_get_update"
         android:visibility="gone"/>
 
-    <include
-        android:id="@+id/progress_container"
-        layout="@layout/progress_bar"
-        android:visibility="gone" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

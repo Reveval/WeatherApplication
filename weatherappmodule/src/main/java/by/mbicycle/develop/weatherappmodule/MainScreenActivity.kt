@@ -9,7 +9,11 @@ import by.mbicycle.develop.weatherappmodule.databinding.ActivityMainScreenBindin
 import com.google.android.material.tabs.TabLayoutMediator
 import java.util.*
 
-class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener, SwipeRefreshListener {
+class MainScreenActivity :
+    AppCompatActivity(),
+    BottomBarVisibilityListener,
+    SwipeRefreshListener,
+    ProgressBarVisibilityListener {
     private lateinit var binding: ActivityMainScreenBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +24,8 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener, Swi
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         binding.apply {
-            messageNoLocation.root.visibility = View.GONE
+            progressContainer.root.visibility = View.INVISIBLE
+
             mainScreenViewPager.apply {
                 adapter = MainScreenAdapter(this@MainScreenActivity)
                 isUserInputEnabled = false
@@ -75,6 +80,10 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener, Swi
         binding.tabLayout.visibility = visibility
     }
 
+    override fun setProgressBarVisibility(visibility: Int) {
+        binding.progressContainer.root.visibility = visibility
+    }
+
     override fun onBackPressed() {
         val fragmentManager = supportFragmentManager.fragments.first().childFragmentManager
         if (fragmentManager.backStackEntryCount == 2) {
@@ -87,4 +96,6 @@ class MainScreenActivity : AppCompatActivity(), BottomBarVisibilityListener, Swi
     override fun updateData() {
         updateDataIntoSomeFragment()
     }
+
+
 }

@@ -10,7 +10,7 @@
         android:layout_width="179dp"
         android:layout_height="179dp"
         android:layout_marginTop="245dp"
-        android:background="@drawable/icon_no_data"
+        android:background="@drawable/ic_no_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

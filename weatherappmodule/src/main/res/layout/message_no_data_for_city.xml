@@ -9,7 +9,7 @@
         android:id="@+id/icon_no_data_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/icon_no_data"
+        android:background="@drawable/ic_no_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

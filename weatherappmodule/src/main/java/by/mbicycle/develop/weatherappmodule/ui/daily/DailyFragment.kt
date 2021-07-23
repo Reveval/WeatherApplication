@@ -42,9 +42,7 @@ class DailyFragment : Fragment(), UpdateDataListener {
                     }
                 }
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (isRefreshing) isRefreshing = false
-                }, 1000L)
+                if (isRefreshing) isRefreshing = false
             }
         }
 
@@ -58,7 +56,7 @@ class DailyFragment : Fragment(), UpdateDataListener {
         val listOfDailyForecastItems = arrayListOf<DailyForecastItem>()
 
         context?.let { ctx ->
-            binding.progressContainer.root.visibility = View.VISIBLE
+            changeProgressBarVisibility(View.VISIBLE)
 
             PreferencesManager.instance(ctx).let { prefs ->
 
@@ -84,7 +82,7 @@ class DailyFragment : Fragment(), UpdateDataListener {
                     }
 
                     Handler(Looper.getMainLooper()).post {
-                        binding.progressContainer.root.visibility = View.GONE
+                        changeProgressBarVisibility(View.GONE)
                         recyclerAdapter.setData(listOfDailyForecastItems)
                     }
                 }
@@ -96,7 +94,7 @@ class DailyFragment : Fragment(), UpdateDataListener {
         Handler(Looper.getMainLooper()).post {
             if (predicate) {
                 binding.apply {
-                    progressContainer.root.visibility = View.GONE
+                    changeProgressBarVisibility(View.GONE)
                     messageCannotGetUpdateForDaily.root.visibility = View.VISIBLE
                 }
             } else {
@@ -107,5 +105,13 @@ class DailyFragment : Fragment(), UpdateDataListener {
 
     override fun reloadData() {
         showDailyForecast()
+    }
+
+    private fun changeProgressBarVisibility(visibility: Int) {
+        activity?.let {
+            if (it is ProgressBarVisibilityListener) {
+                it.setProgressBarVisibility(visibility)
+            }
+        }
     }
 }

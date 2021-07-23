@@ -41,9 +41,9 @@ class HourlyFragment : Fragment(), UpdateDataListener {
                 1 -> getString(R.string.today_tab_name)
                 else -> throw IllegalStateException()
             }
-
-            setCityNameAndDate(position)
         }.attach()
+
+        setCityNameAndDate(1)
 
         binding.hourlyTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {

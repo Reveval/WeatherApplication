@@ -1,4 +1,4 @@
-package by.mbicycle.develop.weatherappmodule
+package by.mbicycle.develop.weatherappmodule.ui
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

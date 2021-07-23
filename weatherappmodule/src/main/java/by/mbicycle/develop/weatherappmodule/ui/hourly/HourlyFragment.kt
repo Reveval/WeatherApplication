@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import by.mbicycle.develop.weatherappmodule.R
-import by.mbicycle.develop.weatherappmodule.UpdateDataListener
+import by.mbicycle.develop.weatherappmodule.ui.UpdateDataListener
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentHourlyBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

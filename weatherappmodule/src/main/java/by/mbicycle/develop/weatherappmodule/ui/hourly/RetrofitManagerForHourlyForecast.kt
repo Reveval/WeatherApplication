@@ -3,7 +3,7 @@ package by.mbicycle.develop.weatherappmodule.ui.hourly
 import android.content.Context
 import by.mbicycle.develop.weatherappmodule.BASE_URL_FOR_OPEN_WEATHER_API
 import by.mbicycle.develop.weatherappmodule.BuildConfig
-import by.mbicycle.develop.weatherappmodule.CityNameModel
+import by.mbicycle.develop.weatherappmodule.ui.CityNameModel
 import by.mbicycle.develop.weatherappmodule.NetworkConnectionInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

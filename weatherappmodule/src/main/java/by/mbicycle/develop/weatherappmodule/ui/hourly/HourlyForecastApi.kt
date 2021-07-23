@@ -1,6 +1,6 @@
 package by.mbicycle.develop.weatherappmodule.ui.hourly
 
-import by.mbicycle.develop.weatherappmodule.CityNameModel
+import by.mbicycle.develop.weatherappmodule.ui.CityNameModel
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

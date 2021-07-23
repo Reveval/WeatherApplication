@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherApplication">
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".ui.SplashScreenActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainScreenActivity"
+            android:name=".ui.MainScreenActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
     </application>

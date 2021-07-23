@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.mbicycle.develop.weatherappmodule.*
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentDailyBinding
+import by.mbicycle.develop.weatherappmodule.ui.ProgressBarVisibilityListener
+import by.mbicycle.develop.weatherappmodule.ui.SwipeRefreshListener
+import by.mbicycle.develop.weatherappmodule.ui.UpdateDataListener
 
 class DailyFragment : Fragment(), UpdateDataListener {
     private lateinit var binding: FragmentDailyBinding

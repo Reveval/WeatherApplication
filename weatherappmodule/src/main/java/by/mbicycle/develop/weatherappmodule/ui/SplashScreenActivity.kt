@@ -1,4 +1,4 @@
-package by.mbicycle.develop.weatherappmodule
+package by.mbicycle.develop.weatherappmodule.ui
 
 import android.Manifest
 import android.content.Intent
@@ -7,15 +7,13 @@ import android.net.Uri
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
 import android.provider.Settings
-import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginTop
+import by.mbicycle.develop.weatherappmodule.*
 import by.mbicycle.develop.weatherappmodule.databinding.ActivitySplashScreenBinding
 import java.util.*
 

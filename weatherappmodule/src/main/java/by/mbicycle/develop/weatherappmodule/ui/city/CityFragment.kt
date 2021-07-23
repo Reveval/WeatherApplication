@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.mbicycle.develop.weatherappmodule.*
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentCityBinding
+import by.mbicycle.develop.weatherappmodule.ui.ProgressBarVisibilityListener
+import by.mbicycle.develop.weatherappmodule.ui.SwipeRefreshListener
+import by.mbicycle.develop.weatherappmodule.ui.UpdateDataListener
 import by.mbicycle.develop.weatherappmodule.ui.city.adapters.RecyclerAdapterForFixedList
 import by.mbicycle.develop.weatherappmodule.ui.city.adapters.RecyclerAdapterForSearchList
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherItem

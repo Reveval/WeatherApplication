@@ -1,4 +1,4 @@
-package by.mbicycle.develop.weatherappmodule
+package by.mbicycle.develop.weatherappmodule.ui
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

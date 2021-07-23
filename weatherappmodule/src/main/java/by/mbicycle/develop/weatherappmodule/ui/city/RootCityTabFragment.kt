@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import by.mbicycle.develop.weatherappmodule.R
-import by.mbicycle.develop.weatherappmodule.UpdateDataListener
+import by.mbicycle.develop.weatherappmodule.ui.UpdateDataListener
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentRootCityTabBinding
 
 class RootCityTabFragment : Fragment(), UpdateDataListener {

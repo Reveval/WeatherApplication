@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.mbicycle.develop.weatherappmodule.*
 import by.mbicycle.develop.weatherappmodule.databinding.FragmentYesterdayBinding
+import by.mbicycle.develop.weatherappmodule.ui.ProgressBarVisibilityListener
+import by.mbicycle.develop.weatherappmodule.ui.SwipeRefreshListener
+import by.mbicycle.develop.weatherappmodule.ui.UpdateDataListener
 import by.mbicycle.develop.weatherappmodule.ui.hourly.*
 import java.io.File
 import java.util.*

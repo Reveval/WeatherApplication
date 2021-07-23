@@ -2,6 +2,7 @@ package by.mbicycle.develop.weatherappmodule.ui.daily
 
 import android.content.Context
 import by.mbicycle.develop.weatherappmodule.*
+import by.mbicycle.develop.weatherappmodule.ui.CityNameModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
+import by.mbicycle.develop.weatherappmodule.ui.CityNameModel
 import by.mbicycle.develop.weatherappmodule.ui.city.models.LocationModel
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherItem
 import by.mbicycle.develop.weatherappmodule.ui.city.models.WeatherModelForFixedList
